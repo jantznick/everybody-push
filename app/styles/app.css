@@ -1,9 +1,0 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-@layer components {
-    .link {
-        @apply border-2 border-blue-700 rounded-lg px-4 py-2 hover:bg-cyan-500 transition-all
-    }
-}
