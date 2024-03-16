@@ -1,4 +1,4 @@
 export type StripePaymentResult = {
-  sessionUrl: string | null;
-  sessionId: string;
+	sessionUrl: string | null;
+	sessionId: string;
 };

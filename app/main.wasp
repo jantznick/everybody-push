@@ -46,10 +46,7 @@ app OpenSaaS {
     onAuthSucceededRedirectTo: "/demo-app",
   },
   db: { 
-    system: PostgreSQL,
-    seeds: [
-      import { devSeedUsers } from "@src/server/scripts/usersSeed.js",
-    ]
+    system: PostgreSQL
   },
   client: {
     rootComponent: import App from "@src/client/App",
@@ -82,6 +79,9 @@ entity User {=psl
   subscriptionStatus        String?
   sendEmail                 Boolean         @default(false)
   datePaid                  DateTime?
+  organization              Int?
+  project                   Int?
+  team                      Int?
 psl=}
 
 entity Organization {=psl
@@ -320,6 +320,11 @@ query getDailyStats {
 query getPaginatedUsers {
   fn: import { getPaginatedUsers } from "@src/server/queries.js",
   entities: [User]
+}
+
+query getProjectTasks {
+  fn: import { getProjectTasks } from "@src/server/everybodyPushQueries.js",
+  entities: [User, Task]
 }
 
 /*
