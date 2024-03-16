@@ -11,7 +11,7 @@ export default interface iTask {
 	description: string;
 }
 
-export const getProjectTasks: GetProjectTasks<any, any> = async (args: any, context) => {
+export const getProjectTasks: GetProjectTasks = async (args:iTask, context) => {
 	const projectTasks = await context.entities.Task.findMany({
 		where: {
 			project: args.project,

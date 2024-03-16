@@ -289,6 +289,11 @@ page AdminUIButtonsPage {
   component: import AdminUI from "@src/client/admin/pages/UiElements/Buttons"
 }
 
+route ErrorRoute { path: "*", to: ErrorPage }
+page ErrorPage {
+  component: import ErrorPage from "@src/client/routes/Error"
+}
+
 /* ⛑ These are the Wasp Operations, which allow the client and server to interact:
  * https://wasp-lang.dev/docs/data-model/operations/overview
  */

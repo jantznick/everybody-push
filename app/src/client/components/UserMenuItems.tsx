@@ -18,17 +18,6 @@ export const UserMenuItems = ({ user, setMobileMenuOpen }: { user?: Partial<User
 					path === '/admin' ? 'px-6' : 'sm:px-6'
 				}`}
 			>
-				{path === '/' || path === '/admin' ? (
-					<li>
-						<Link
-							to='/demo-app'
-							className='flex items-center gap-3.5 text-sm font-medium duration-300 ease-in-out hover:text-blue-700'
-						>
-							<MdOutlineSpaceDashboard size='1.1rem' />
-							AI Scheduler (Demo App)
-						</Link>
-					</li>
-				) : null}
 				<li>
 					<Link
 						to='/account'
