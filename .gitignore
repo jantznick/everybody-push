@@ -5,3 +5,7 @@ built/
 public/*
 
 .gitignore
+
+everybodypushDB
+
+.env
