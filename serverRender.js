@@ -10,6 +10,8 @@ const app = express();
 
 app.use(express.static('public'));
 
+app.use("/api", require('./api/index'));
+
 app.get('*', (req,res) => {
 	const context = {};
 	res.send(`<!DOCTYPE html>
