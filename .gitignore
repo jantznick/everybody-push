@@ -7,5 +7,6 @@ public/*
 .gitignore
 
 everybodypushDB
+everybodypushDB/*
 
 .env

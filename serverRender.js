@@ -6,6 +6,22 @@ import { renderToString } from 'react-dom/server';
 import { StaticProvider } from './StaticContext';
 import AppRoutes from './app/routes';
 
+import { Sequelize } from 'sequelize';
+import pg from 'pg';
+
+require('dotenv').config()
+
+const sequelize = new Sequelize(process.env.DATABASE_URL, {
+	dialectModule: pg
+}) 
+
+try {
+	await sequelize.authenticate();
+	console.log('DB Connection has been established successfully.');
+} catch (error) {
+	console.error('Unable to connect to the database:', error);
+}
+
 const app = express();
 
 app.use(express.static('public'));
