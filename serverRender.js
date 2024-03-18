@@ -1,5 +1,6 @@
 import React from 'react';
 import express from 'express';
+import bodyParser from 'body-parser';
 import { StaticRouter } from 'react-router-dom/server';
 import { renderToString } from 'react-dom/server';
 
@@ -24,9 +25,11 @@ try {
 
 const app = express();
 
+app.use(bodyParser.json());
+
 app.use(express.static('public'));
 
-app.use("/api", require('./api/index'));
+app.use("/api", require('./api/routes/index'));
 
 app.get('*', (req,res) => {
 	const context = {};
