@@ -29,9 +29,9 @@ module.exports = (() => {
 		try {
 			const newUser = await User.create({ email, password });
 
-			// We don't want to display hashed password in response
 			delete newUser.dataValues.password;
-
+			// todo: add session cookie to response to login user
+			// todo: setup verification email
 			res.json({ message: 'User created successfully', user: newUser });
 		} catch (error) {
 			console.log(error);
