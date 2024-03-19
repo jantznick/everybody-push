@@ -7,3 +7,13 @@
         @apply border-2 border-blue-700 rounded-lg px-4 py-2 hover:bg-cyan-500 transition-all
     }
 }
+
+#interstitial {
+    z-index: 999;
+    background: rgb(209 206 206 / 57%);
+    height: 100vh;
+    width: 100vw;
+    position: absolute;
+    left: 0;
+    top: 0;
+}

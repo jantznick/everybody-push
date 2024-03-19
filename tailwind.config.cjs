@@ -1,4 +1,5 @@
 module.exports = {
+    mode: 'jit',
     content: ['./app/components/**/*.{js,jsx}', './serverRender.js', './public/index.html'],
     theme: {
         screens: {

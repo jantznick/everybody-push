@@ -1,6 +1,6 @@
 import React from 'react';
 import express from 'express';
-import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
 import { StaticRouter } from 'react-router-dom/server';
 import { renderToString } from 'react-dom/server';
 
@@ -25,9 +25,15 @@ try {
 
 const app = express();
 
-app.use(bodyParser.json());
+app.use(express.json());
+
+app.use(cookieParser());
 
 app.use(express.static('public'));
+
+app.use("*", (req, res, next) => {
+	next();
+})
 
 app.use("/api", require('./api/routes/index'));
 

@@ -1,6 +1,7 @@
 const Sequelize = require('sequelize');
 const pg = require('pg');
 const bcrypt = require('bcryptjs');
+const { v4: uuidv4 } = require('uuid');
 
 require('dotenv').config()
 
@@ -39,7 +40,7 @@ const Category = sequelize.define('category', {
 });
 
 const User = sequelize.define('user', {
-	id: { type: Sequelize.INTEGER, primaryKey: true },
+	id: { type: Sequelize.STRING, primaryKey: true },
 	name: Sequelize.STRING,
 	email: Sequelize.STRING,
 	password: Sequelize.STRING,
@@ -47,14 +48,20 @@ const User = sequelize.define('user', {
 	lastActiveAt: Sequelize.DATE,
 	subscriptionTier: Sequelize.STRING,
 	subscriptionStatus: Sequelize.STRING,
-	org: Sequelize.INTEGER,
-	team: Sequelize.INTEGER,
-	project: Sequelize.INTEGER
+	org: Sequelize.STRING,
+	team: Sequelize.STRING,
+	project: Sequelize.STRING
 }, {
 	hooks: {
 		beforeCreate: (user) => {
 			const salt = bcrypt.genSaltSync(10);
 			user.password = bcrypt.hashSync(user.password, salt);
+			user.id = uuidv4();
+			user.subscriptionTier = 'free'
+			user.subscriptionStatus = 'not-paid'
+			user.org = 'none'
+			user.team = 'none'
+			user.project = 'none'
 		}
 	}
 });
@@ -62,7 +69,7 @@ const User = sequelize.define('user', {
 const Task = sequelize.define('task', {
 	id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
 	created_at: Sequelize.DATE,
-	assignee: { type: Sequelize.INTEGER, references: { model: User, key: 'id' } },
+	assignee: { type: Sequelize.STRING, references: { model: User, key: 'id' } },
 	done: Sequelize.BOOLEAN,
 	category: { type: Sequelize.INTEGER, references: { model: Category, key: 'id' } },
 	title: Sequelize.STRING,
@@ -75,7 +82,7 @@ const Comment = sequelize.define('comment', {
 	id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
 	name: Sequelize.STRING,
 	task: { type: Sequelize.INTEGER, references: { model: Task, key: 'id' } },
-	user: { type: Sequelize.INTEGER, references: { model: User, key: 'id' } },
+	user: { type: Sequelize.STRING, references: { model: User, key: 'id' } },
 	content: Sequelize.STRING,
 	createdAt: Sequelize.DATE
 });
@@ -90,13 +97,13 @@ const Subtask = sequelize.define('subtask', {
 	id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
 	done: Sequelize.BOOLEAN,
 	task: { type: Sequelize.INTEGER, references: { model: Task, key: 'id' } },
-	assignee: { type: Sequelize.INTEGER, references: { model: User, key: 'id' } }
+	assignee: { type: Sequelize.STRING, references: { model: User, key: 'id' } }
 });
 
 const LoginToken = sequelize.define('loginToken', {
 	token: { type: Sequelize.STRING, primaryKey: true, unique: true },
 	dateCreated: Sequelize.DATE,
-	user: { type: Sequelize.INTEGER, references: { model: User, key: 'id' } },
+	user: { type: Sequelize.STRING, references: { model: User, key: 'id' } },
 	shortCode: Sequelize.STRING,
 	used: Sequelize.BOOLEAN
 });
@@ -104,14 +111,19 @@ const LoginToken = sequelize.define('loginToken', {
 const ResetPasswordToken = sequelize.define('resetPasswordToken', {
 	token: { type: Sequelize.STRING, primaryKey: true, unique: true },
 	dateCreated: Sequelize.DATE,
-	user: { type: Sequelize.INTEGER, references: { model: User, key: 'id' } },
+	user: { type: Sequelize.STRING, references: { model: User, key: 'id' } },
 	shortCode: Sequelize.STRING,
 	used: Sequelize.BOOLEAN
 });
 
-// sequelize.sync({force: true})
-// .then(() => console.log('Tables have been successfully created, if one doesn\'t exist'))
-// .catch(error => console.log('An error occurred while creating the table:', error));
+const Session = sequelize.define('session', {
+	token: { type: Sequelize.STRING, allowNull: false },
+	userId: { type: Sequelize.STRING, allowNull: false, references: { model: User, key: 'id' }}
+});
+
+sequelize.sync()
+.then(() => console.log('Tables have been successfully created, if one doesn\'t exist'))
+.catch(error => console.log('An error occurred while creating the table:', error));
 
 module.exports = {
 	sequelize,
@@ -125,5 +137,6 @@ module.exports = {
 	Tag,
 	User,
 	LoginToken,
-	ResetPasswordToken
+	ResetPasswordToken,
+	Session
 }
