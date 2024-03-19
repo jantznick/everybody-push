@@ -28,9 +28,17 @@ module.exports = (() => {
 	});
 
 	// todo CRUD on org, team, project, category
-	management.post('/orgs/create', isAuthorizedForThat, async (req, res) => {
+	management.post('/orgs/:method', isAuthorizedForThat, async (req, res) => {
 		// Include validations, try-catch and business logic as necessary
-		const org = await Org.create(req.body);
+		console.log(req.body)
+		// TODO: update looks like this: { lastName: "Doe" }, {
+		//   where: {
+		//     lastName: null
+		//   }
+		// }
+		// so we'll have to create logic for the different methods but it would still work better than rewriting a ton of methods
+		// might be able to put a orgs/teams/projects handler in too
+		const org = await Org[req.params.method](req.body);
 		res.json(org);
 	});
 	
