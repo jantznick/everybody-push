@@ -10,13 +10,13 @@ const data = {
     categories: [
         {
             id: 1,
-            title: 'Category One'
+            title: 'High Priority'
         }, {
             id: 2,
-            title: 'Category Two'
+            title: 'Medium Priority'
         }, {
             id: 3,
-            title: 'Category Three'
+            title: 'Low Priority'
         }
     ],
     tasks: [
