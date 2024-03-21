@@ -1,4 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
+import {DndContext} from '@dnd-kit/core';
+
+import { SwimLane } from './SwimLane';
 
 const data = {
     orgs: ['Organization 1'],
@@ -20,35 +23,43 @@ const data = {
         {
             category: 1,
             name: 'Something to do',
-            status: 'to-do'
+            status: 'to-do',
+            id: 'a'
         }, {
             category: 1,
             name: 'Something else to do',
-            status: 'to-do'
+            status: 'to-do',
+            id: 'b'
         }, {
             category: 2,
             name: 'Something to do that\'s in Category 2',
-            status: 'to-do'
+            status: 'to-do',
+            id: 'c'
         }, {
             category: 2,
             name: 'Something from Category 2 to do',
-            status: 'to-do'
+            status: 'to-do',
+            id: 'd'
         }, {
             category: 2,
             name: 'A very important task in progress',
-            status: 'in-progress'
+            status: 'in-progress',
+            id: 'e'
         }, {
             category: 2,
             name: 'Another very important task that is in progress',
-            status: 'in-progress'
+            status: 'in-progress',
+            id: 'f'
         }, {
             category: 3,
             name: 'A very important task to refine',
-            status: 'refinement'
+            status: 'refinement',
+            id: 'g'
         }, {
             category: 3,
             name: 'A completed task',
-            status: 'done'
+            status: 'done',
+            id: 'h'
         }, 
     ]
 }
@@ -70,6 +81,11 @@ const swimLanes = [
 ];
 
 export const Dashboard = () => {
+	const [tasks, setTasks] = useState(data.tasks);
+
+    function handleDragEnd(event) {
+        setTasks(tasks.map(task => task.id == event.active.id ? {...task, status: event.over.id} : task))
+    }
 
 	return (
 		<div id="dashboard" className="bg-gray-300 w-[85%] ml-[15%] min-h-screen">
@@ -78,25 +94,17 @@ export const Dashboard = () => {
 			</div>
 			<div className="lanes flex justify-between pb-4 min-h-[75%]">
 
-            {/* loop through each swimlane and set the swim lane titles */}
-            {swimLanes.map((lane, laneI) => 
-                <div className="swimLane mx-2 bg-slate-400 p-2 w-[24%] rounded">
-					<div className="swimLaneTitle p-4 uppercase border-b-black border-b-2">{lane.title}</div>
-
-                    {[...new Set(data.tasks.filter(task => task.status == lane.key).map(task => task.category))].map((category, index) =>
-                        <>
-                            <div key={index} className="category mt-2">{data.categories.filter(cat => cat.id == category).map(newCat => newCat.title)}</div>
-                            {data.tasks.filter(task => task.category == category && task.status == lane.key).map((task,i) => 
-                                <div key={i} className="task mt-2 mx-2 rounded p-2 bg-gray-300 hover:cursor-pointer">{task.name}</div>
-                            )}
-                        </>
+                <DndContext onDragEnd={handleDragEnd}>
+                    {/* loop through each swimlane and set the swim lane titles */}
+                    {swimLanes.map((lane, laneI) => 
+                        <SwimLane 
+                            {...data}
+                            tasks={tasks.filter(task => task.status == lane.key)}
+                            lane={lane}
+                            laneI={laneI}
+                        />
                     )}
-
-                    {
-
-                    }
-				</div>
-            )}
+                </DndContext>
 
 			</div>
 		</div>

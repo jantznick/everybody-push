@@ -8,6 +8,10 @@
     }
 }
 
+* {
+    box-sizing: border-box;
+}
+
 #interstitial {
     z-index: 999;
     background: rgb(209 206 206 / 57%);
