@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { DndContext, closestCenter, DragOverlay } from '@dnd-kit/core';
+import { DragDropContext } from 'react-beautiful-dnd';
 
 import { SwimLane } from './SwimLane';
-import { PresentationalToDo } from './PresentationalToDo';
 
 const data = {
     orgs: ['Organization 1'],
@@ -11,13 +10,13 @@ const data = {
     categories: [
         {
             id: 1,
-            title: 'High Priority'
+            title: 'Category A'
         }, {
             id: 2,
-            title: 'Medium Priority'
+            title: 'Category B'
         }, {
             id: 3,
-            title: 'Low Priority'
+            title: 'Category C'
         }
     ],
     tasks: [
@@ -68,50 +67,52 @@ const data = {
 const swimLanes = [
     {
         title: 'Needs Refinement',
-        key: 'refinement'
+        key: 'refinement',
+        id: 'a'
     }, {
         title: 'To Do',
-        key: 'to-do'
+        key: 'to-do',
+        id: 'b'
     }, {
         title: 'In Progress',
-        key: 'in-progress'
+        key: 'in-progress',
+        id: 'c'
     }, {
         title: 'Done',
-        key: 'done'
+        key: 'done',
+        id: 'd'
     }
 ];
 
 export const Dashboard = () => {
     const [tasks, setTasks] = useState(data.tasks);
-    const [activeId, setActiveId] = useState(null);
 
-    function handleDragStart(event) {
-        console.log(event)
-        const { active } = event;
+	const finishDrag = (result) => {
+        console.log(result);
+        const { destination, source, draggableId } = result;
 
-        setActiveId(active.id);
-    }
+		if (!destination) {
+			return;
+		}
 
-    function handleDragEnd(event) {
-        console.log(event);
-        if (event.active.id !== event.over.id) {
-            if (['done', 'to-do', 'in-progress', 'refinement'].includes(event.over.id)) {
-                setTasks(tasks.map(task => task.id == event.active.id ? { ...task, status: event.over.id } : task))
-            } else if (event.over.id.includes('category')) {
-                setTasks(tasks.map(task => task.id == event.active.id ? {
-                    ...task,
-                    status: tasks.filter(task => task.id == event.over.data.current.sortable.items[0])[0].status,
-                    category: tasks.filter(task => task.id == event.over.data.current.sortable.items[0])[0].category,
-                } : task))
-            } else {
-                setTasks(tasks.map(task => task.id == event.active.id ? {
-                    ...task,
-                    status: tasks.filter(task => task.id == event.over.id)[0].status,
-                    category: tasks.filter(task => task.id == event.over.id)[0].category,
-                } : task))
+		if (destination.droppableId === source.droppableId &&
+			destination.index === source.index) {
+				return;
+		}
+
+        const moved = tasks.filter(task => task.id === draggableId)[0];
+        const newLane = swimLanes.filter(lane => lane.id === Array.from(destination.droppableId)[0])[0].key;
+        const newCategory = parseInt(Array.from(destination.droppableId)[1])
+        tasks.splice(tasks.findIndex(task => task.id === draggableId), 1);
+        setTasks([
+            ...tasks,
+            {
+                ...moved,
+                status: newLane,
+                category: newCategory
             }
-        }
-        setActiveId(null);
+        ])
+        
     }
 
     return (
@@ -121,7 +122,9 @@ export const Dashboard = () => {
             </div>
             <div className="lanes flex justify-between pb-4 min-h-[75%]">
 
-                <DndContext onDragEnd={handleDragEnd} onDragStart={handleDragStart} collisionDetection={closestCenter}>
+                <DragDropContext
+                    onDragEnd={finishDrag}
+                >
                     {/* loop through each swimlane and set the swim lane titles */}
                     {swimLanes.map((lane, laneI) =>
                         <SwimLane
@@ -132,10 +135,7 @@ export const Dashboard = () => {
                             laneI={laneI}
                         />
                     )}
-                    <DragOverlay >
-                        {activeId ? <PresentationalToDo id={activeId} status={tasks.filter(task => task.id == activeId)[0].status} name={tasks.filter(task => task.id == activeId)[0].name} /> : null}
-                    </DragOverlay>
-                </DndContext>
+                </DragDropContext>
 
             </div>
         </div>
