@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { DragDropContext } from 'react-beautiful-dnd';
+import { DragDropContext } from '@hello-pangea/dnd';
 
 import { SwimLane } from './SwimLane';
 
@@ -102,7 +102,7 @@ export const Dashboard = () => {
 
         const moved = tasks.filter(task => task.id === draggableId)[0];
         const newLane = swimLanes.filter(lane => lane.id === Array.from(destination.droppableId)[0])[0].key;
-        const newCategory = parseInt(Array.from(destination.droppableId)[1])
+        const newCategory = Array.from(destination.droppableId)[1] === 'x' ? parseInt(Array.from(source.droppableId)[1]) : parseInt(Array.from(destination.droppableId)[1])
         tasks.splice(tasks.findIndex(task => task.id === draggableId), 1);
         setTasks([
             ...tasks,

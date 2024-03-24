@@ -6,6 +6,9 @@
     .link {
         @apply border-2 border-blue-700 rounded-lg px-4 py-2 hover:bg-cyan-500 transition-all
     }
+    .float-background {
+        background-color: rgb(0 0 0 / 35%);
+    }
 }
 
 * {

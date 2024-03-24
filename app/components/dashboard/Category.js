@@ -1,15 +1,23 @@
 import React from 'react';
-import { Droppable } from 'react-beautiful-dnd';
+import { Droppable } from '@hello-pangea/dnd';
+import classNames from 'classnames';
 
 import { ToDo } from './ToDo';
 
-export const Category = ({ laneId, category, index, tasks, key }) => {
+export const Category = ({ laneId, category, index, tasks }) => {
 	return (
 		<>
-			<div key={index} className="category mt-2">{category.title}</div>
+			<div key={index} className="category mt-2 flex justify-between items-center">{category.title}<span className="hover:cursor-pointer material-symbols-outlined">drag_handle</span></div>
 			<Droppable droppableId={laneId + category.id} >
 				{(provided, snapshot) => (
-					<div ref={provided.innerRef} {...provided.droppableProps} className="taskContainer rounded-md pt-1 pb-4">
+					<div ref={provided.innerRef} {...provided.droppableProps} className={classNames(
+						"taskContainer",
+						"rounded-md",
+						"pt-1",
+						"pb-4",
+						{ 'float-background': snapshot.isDraggingOver }
+					)}
+					>
 						{tasks.map((task, i) =>
 							<ToDo
 								key={task.id}
@@ -19,9 +27,8 @@ export const Category = ({ laneId, category, index, tasks, key }) => {
 						)}
 						{provided.placeholder}
 					</div>
-                )}
+				)}
 			</Droppable>
-
 		</>
 	)
 }

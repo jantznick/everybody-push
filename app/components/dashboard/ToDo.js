@@ -1,6 +1,6 @@
 import React from 'react';
 import classNames from "classnames";
-import { Draggable } from 'react-beautiful-dnd';
+import { Draggable } from '@hello-pangea/dnd';
 
 export const ToDo = ({ id, i, name, category, status }) => {
 
@@ -8,6 +8,7 @@ export const ToDo = ({ id, i, name, category, status }) => {
         <Draggable 
             draggableId={id}
             index={i}
+            key={id}
         >
             {(provided, snapshot) => (
                 <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps} key={id} id={id} className={classNames(
@@ -16,11 +17,17 @@ export const ToDo = ({ id, i, name, category, status }) => {
                     "mx-2",
                     "rounded",
                     "p-2",
+                    "flex",
+                    "justify-between",
+                    "items-center",
                     "bg-gray-300",
                     "hover:cursor-pointer",
                     { 'line-through': status == 'done' }
                 )}
-                >{name}</div>
+                >
+                    <span>{name}</span>
+                    <span className="hover:cursor-pointer material-symbols-outlined">edit</span>
+                </div>
             )}
         </Draggable>
     )
