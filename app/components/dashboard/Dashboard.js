@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { DragDropContext } from '@hello-pangea/dnd';
+import classNames from 'classnames';
 
 import { SwimLane } from './SwimLane';
 
@@ -86,6 +87,15 @@ const swimLanes = [
 
 export const Dashboard = () => {
     const [tasks, setTasks] = useState(data.tasks);
+    const [addingTask, setAddingTask] = useState(false);
+
+    const addTask = () => {
+        setAddingTask(true);
+    }
+
+    const saveTask = () => {
+        setAddingTask(false)
+    }
 
 	const finishDrag = (result) => {
         console.log(result);
@@ -118,7 +128,22 @@ export const Dashboard = () => {
     return (
         <div id="dashboard" className="bg-gray-300 w-[85%] ml-[15%] min-h-screen">
             <div id="dashHeader" className="flex justify-start items-center px-4 py-8 uppercase">
-                {data.orgs[0]} - {data.teams[0]} - {data.projects[0]} - To Do List
+                <div>{data.orgs[0]} - {data.teams[0]} - {data.projects[0]} - To Do List</div>
+                {addingTask &&
+                    <div className='ml-20 flex justify-center items-center bg-gray-300 border-2 border-black rounded-md p-2'>
+                        <input type="text" name="New Task" id="addTask" className='bg-gray-300 focus-visible:outline-none focus:outline-none'/>
+                        <span onClick={saveTask} className="hover:cursor-pointer material-symbols-outlined">save</span>
+                    </div>
+                }
+                <div onClick={addTask} className={classNames(
+                    "newTask",
+                    { "ml-4": addingTask },
+                    { "ml-20": !addingTask },
+                    "button"
+                )}>
+                    NEW TASK
+                    <span className="material-symbols-outlined">add</span>
+                </div>
             </div>
             <div className="lanes flex justify-between pb-4 min-h-[75%]">
 

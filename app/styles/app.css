@@ -6,8 +6,23 @@
     .link {
         @apply border-2 border-blue-700 rounded-lg px-4 py-2 hover:bg-cyan-500 transition-all
     }
+    .button {
+        @apply border-2 border-black p-2 rounded-md font-bold flex justify-center items-center transition ease-in-out duration-200 hover:bg-black hover:text-white hover:cursor-pointer
+    }
     .float-background {
         background-color: rgb(0 0 0 / 35%);
+    }
+    .nav-org {
+        @apply p-2 text-cyan-700 pl-1 text-2xl hover:cursor-pointer
+    }
+    .nav-team {
+        @apply p-2 pb-0 text-cyan-500 pl-2 text-xl hover:cursor-pointer
+    }
+    .nav-project {
+        @apply px-2 py-0 pl-3 text-white hover:cursor-pointer
+    }
+    .nav-project-active {
+        @apply bg-blue-400 text-black py-2
     }
 }
 
