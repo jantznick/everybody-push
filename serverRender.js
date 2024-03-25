@@ -6,15 +6,9 @@ import { renderToString } from 'react-dom/server';
 
 import { StaticProvider } from './StaticContext';
 import AppRoutes from './app/routes';
-
-import { Sequelize } from 'sequelize';
-import pg from 'pg';
+import { sequelize } from './api/models';
 
 require('dotenv').config()
-
-const sequelize = new Sequelize(process.env.DATABASE_URL, {
-	dialectModule: pg
-}) 
 
 try {
 	await sequelize.authenticate();
