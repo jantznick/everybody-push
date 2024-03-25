@@ -15,7 +15,7 @@ export const SwimLane = ({ lane, laneI, tasks, categories }) => {
                     category={categories.filter(thisCategory => thisCategory.id == category)[0]}
                     laneId={lane.id}
                     index={index}
-                    tasks={tasks.filter(task => task.category == category)}
+                    tasks={tasks.filter(task => task.category == category).sort((a, b) => parseFloat(a.priority) - parseFloat(b.priority))}
                     key={category}
                 />
             )}

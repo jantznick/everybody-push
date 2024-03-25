@@ -11,13 +11,13 @@ const data = {
     categories: [
         {
             id: 1,
-            title: 'Category A'
+            title: 'Category One'
         }, {
             id: 2,
-            title: 'Category B'
+            title: 'Category Two'
         }, {
             id: 3,
-            title: 'Category C'
+            title: 'Category Three'
         }
     ],
     tasks: [
@@ -25,42 +25,50 @@ const data = {
             category: 1,
             name: 'Something to do',
             status: 'to-do',
-            id: 'a'
+            id: 'a',
+            priority: 0
         }, {
             category: 1,
             name: 'Something else to do',
             status: 'to-do',
-            id: 'b'
+            id: 'b',
+            priority: 1
         }, {
             category: 2,
-            name: 'Something to do that\'s in Category 2',
+            name: 'Something to do that\'s in Category Two',
             status: 'to-do',
-            id: 'c'
+            id: 'c',
+            priority: 0
         }, {
             category: 2,
-            name: 'Something from Category 2 to do',
+            name: 'Something from Category Two to do',
             status: 'to-do',
-            id: 'd'
+            id: 'd',
+            priority: 1
         }, {
             category: 2,
             name: 'A very important task in progress',
             status: 'in-progress',
-            id: 'e'
+            id: 'e',
+            priority: 0
         }, {
             category: 2,
             name: 'Another very important task that is in progress',
             status: 'in-progress',
-            id: 'f'
+            id: 'f',
+            priority: 1
         }, {
             category: 3,
             name: 'A very important task to refine',
             status: 'refinement',
-            id: 'g'
+            id: 'g',
+            priority: 0
         }, {
             category: 3,
             name: 'A completed task',
             status: 'done',
-            id: 'h'
+            id: 'h',
+            priority: 0
         },
     ]
 }
@@ -113,13 +121,41 @@ export const Dashboard = () => {
         const moved = tasks.filter(task => task.id === draggableId)[0];
         const newLane = swimLanes.filter(lane => lane.id === Array.from(destination.droppableId)[0])[0].key;
         const newCategory = Array.from(destination.droppableId)[1] === 'x' ? parseInt(Array.from(source.droppableId)[1]) : parseInt(Array.from(destination.droppableId)[1])
+        const place = destination.index
         tasks.splice(tasks.findIndex(task => task.id === draggableId), 1);
+        tasks.map(task => {
+            // handle task priority in new category/swimlane
+            if (tasks.filter(task => task.category == newCategory).length == 1) {
+                if (place == 0) {
+                    task.priority = 1
+                } else {
+                    task.priority = 0
+                }
+            } else if (
+                task.category == newCategory &&
+                task.status == newLane &&
+                task.priority >= place
+            ) {
+                task.priority += 1
+            } else if (task.priority == place) {
+                task.priority -= 1
+            }
+            // handle task priority in category/swimlane that was 'abandoned'
+            if (
+                task.category == moved.category &&
+                task.status == moved.status &&
+                task.priority > moved.priority
+            ) {
+                task.priority -= 1
+            }
+        })
         setTasks([
             ...tasks,
             {
                 ...moved,
                 status: newLane,
-                category: newCategory
+                category: newCategory,
+                priority: place
             }
         ])
         
