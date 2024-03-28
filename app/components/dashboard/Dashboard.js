@@ -11,64 +11,54 @@ const data = {
     categories: [
         {
             id: 1,
-            title: 'Category One'
+            title: 'Category One',
+            tasks: ['a', 'b'],
+            priority: 0
         }, {
             id: 2,
-            title: 'Category Two'
+            title: 'Category Two',
+            tasks: ['c', 'd', 'e', 'f'],
+            priority: 1
         }, {
             id: 3,
-            title: 'Category Three'
+            title: 'Category Three',
+            tasks: ['g', 'h'],
+            priority: 2
         }
     ],
     tasks: [
         {
-            category: 1,
             name: 'Something to do',
             status: 'to-do',
-            id: 'a',
-            priority: 0
+            id: 'a'
         }, {
-            category: 1,
             name: 'Something else to do',
             status: 'to-do',
-            id: 'b',
-            priority: 1
+            id: 'b'
         }, {
-            category: 2,
             name: 'Something to do that\'s in Category Two',
             status: 'to-do',
-            id: 'c',
-            priority: 0
+            id: 'c'
         }, {
-            category: 2,
             name: 'Something from Category Two to do',
             status: 'to-do',
-            id: 'd',
-            priority: 1
+            id: 'd'
         }, {
-            category: 2,
             name: 'A very important task in progress',
             status: 'in-progress',
-            id: 'e',
-            priority: 0
+            id: 'e'
         }, {
-            category: 2,
             name: 'Another very important task that is in progress',
             status: 'in-progress',
-            id: 'f',
-            priority: 1
+            id: 'f'
         }, {
-            category: 3,
             name: 'A very important task to refine',
             status: 'refinement',
-            id: 'g',
-            priority: 0
+            id: 'g'
         }, {
-            category: 3,
             name: 'A completed task',
             status: 'done',
-            id: 'h',
-            priority: 0
+            id: 'h'
         },
     ]
 }
@@ -95,6 +85,7 @@ const swimLanes = [
 
 export const Dashboard = () => {
     const [tasks, setTasks] = useState(data.tasks);
+    const [categories, setCategories] = useState(data.categories);
     const [addingTask, setAddingTask] = useState(false);
 
     const addTask = () => {
@@ -118,47 +109,44 @@ export const Dashboard = () => {
 				return;
 		}
 
+        // lot of bugs in this logic should probably start over
         const moved = tasks.filter(task => task.id === draggableId)[0];
         const newLane = swimLanes.filter(lane => lane.id === Array.from(destination.droppableId)[0])[0].key;
+        const oldCategory = parseInt(Array.from(source.droppableId)[1]);
+        const oldCategoryData = categories.filter(category => category.id === oldCategory)[0];
         const newCategory = Array.from(destination.droppableId)[1] === 'x' ? parseInt(Array.from(source.droppableId)[1]) : parseInt(Array.from(destination.droppableId)[1])
+        const newCategoryData = categories.filter(category => category.id === newCategory)[0]
         const place = destination.index
         tasks.splice(tasks.findIndex(task => task.id === draggableId), 1);
-        tasks.map(task => {
-            // handle task priority in new category/swimlane
-            if (tasks.filter(task => task.category == newCategory).length == 1) {
-                if (place == 0) {
-                    task.priority = 1
-                } else {
-                    task.priority = 0
-                }
-            } else if (
-                task.category == newCategory &&
-                task.status == newLane &&
-                task.priority >= place
-            ) {
-                task.priority += 1
-            } else if (task.priority == place) {
-                task.priority -= 1
-            }
-            // handle task priority in category/swimlane that was 'abandoned'
-            if (
-                task.category == moved.category &&
-                task.status == moved.status &&
-                task.priority > moved.priority
-            ) {
-                task.priority -= 1
-            }
-        })
+        // remove old category
+        categories.splice(categories.findIndex(category => category.id === oldCategory), 1)
+        // remove new category if it's different than the old
+        if (newCategory != oldCategory) {
+            categories.splice(categories.findIndex(category => category.id === newCategory), 1)
+        }
+        // remove old category data task from tasks
+        oldCategoryData.tasks.splice(source.index, 1)
+        // if task only moved location then put it in new location
+        if (newCategory == oldCategory) {
+            oldCategoryData.tasks.splice(place, 0, draggableId)
+        } else if (newCategory != oldCategory) {
+            newCategoryData.tasks.splice(place, 0, draggableId)
+        }
+        // create new categories array
+        const newCategories = [...categories, oldCategoryData];
+        if (newCategory != oldCategory) {
+            newCategories.push(newCategoryData);
+        }
+        // sort new categories array
+        newCategories.sort((a, b) => parseFloat(a.priority) - parseFloat(b.priority))
         setTasks([
             ...tasks,
             {
                 ...moved,
                 status: newLane,
-                category: newCategory,
-                priority: place
             }
         ])
-        
+        setCategories(newCategories)
     }
 
     return (
@@ -190,7 +178,7 @@ export const Dashboard = () => {
                     {swimLanes.map((lane, laneI) =>
                         <SwimLane
                             key={lane.key}
-                            {...data}
+                            categories={categories}
                             tasks={tasks.filter(task => task.status == lane.key)}
                             lane={lane}
                             laneI={laneI}

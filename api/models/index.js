@@ -15,6 +15,35 @@ const getCurrentTimeStamp = () => {
 	return d;
 }
 
+const anonymousAnimalListNames = [
+	"Anonymous Alligator's Tasks",
+	"Busy Beaver's Chores",
+	"Curious Cat's Missions",
+	"Diligent Dolphin's Duties",
+	"Energetic Elephant's Agenda",
+	"Fast Fox's Checklist",
+	"Gleeful Gorilla's Assignments",
+	"Helpful Hedgehog's Plan",
+	"Innovative Iguana's Objectives",
+	"Jolly Jellyfish's Undertakings",
+	"Keen Kangaroo's Activities",
+	"Lively Lion's Worklist",
+	"Meticulous Meerkat's Projects",
+	"Neat Nightingale's Obligations",
+	"Organized Octopus's Goals",
+	"Proactive Penguin's Schedule",
+	"Quick Quokka's Responsibilities",
+	"Resourceful Rabbit's Brief",
+	"Smart Squirrel's Blueprint",
+	"Tenacious Turtle's Steps",
+	"Ultra-guided Unicorn's Tasks",
+	"Vigilant Viper's Scheme",
+	"Wise Whale's Procedures",
+	"Xtra-conscientious X-ray Fish's Designs",
+	"Yielding Yak's Program",
+	"Zestful Zebra's Framework",
+]
+
 const User = sequelize.define('user', {
 	id: { type: Sequelize.STRING, primaryKey: true },
 	first_name: Sequelize.STRING,
@@ -52,7 +81,7 @@ const Org = sequelize.define('org', {
 }, {
 	hooks: {
 		beforeCreate: (org) => {
-			org.id = uuidv4();
+			org.id = org.id || uuidv4();
 			org.name = org.name || ''
 			org.folder = org.folder || ''
 			org.admin = org.admin || []
@@ -69,7 +98,7 @@ const Team = sequelize.define('team', {
 }, {
 	hooks: {
 		beforeCreate: (team) => {
-			team.id = uuidv4();
+			team.id = team.id || uuidv4();
 			team.name = team.name || ''
 			team.org = team.org || ''
 			team.folder = team.folder || ''
@@ -84,6 +113,16 @@ const Project = sequelize.define('project', {
 	team: { type: Sequelize.STRING, references: { model: Team, key: 'id' } },
 	folder: Sequelize.STRING,
 	admin: Sequelize.ARRAY({ type: Sequelize.STRING, references: {model: User.id}})
+}, {
+	hooks: {
+		beforeCreate: (project) => {
+			project.id = project.id || uuidv4();
+			project.name = project.name || anonymousAnimalListNames[Math.floor(Math.random() * anonymousAnimalListNames.length)]
+			project.team = project.team || []
+			project.folder = project.folder || ''
+			project.admin = project.admin || []
+		}
+	}
 });
 
 const Task = sequelize.define('task', {
