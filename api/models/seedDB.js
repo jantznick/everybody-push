@@ -23,8 +23,8 @@ const users = [
         password: 'password',
         createdAt: '2020-09-19T03:24:00',
         lastActiveAt: '2021-02-02T13:24:00',
-        subscriptionTier: 'Premium',
-        subscriptionStatus: 'Active',
+        subscription_tier: 'Premium',
+        subscription_status: 'Active',
         org: [],
         team: [],
         project: []
@@ -35,8 +35,8 @@ const users = [
         password: 'password',
         createdAt: '2021-01-01T11:30:00',
         lastActiveAt: '2021-03-01T16:40:00',
-        subscriptionTier: 'Standard',
-        subscriptionStatus: 'Active',
+        subscription_tier: 'Standard',
+        subscription_status: 'Active',
         org: [],
         team: [],
         project: []

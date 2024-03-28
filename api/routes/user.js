@@ -3,7 +3,7 @@ const user = express.Router();
 const bcrypt = require('bcryptjs');
 const { v4: uuidv4 } = require('uuid');
 
-const { sequelize, User, Session } = require('../models/index');
+const { sequelize, User, Session, getCurrentTimeStamp } = require('../models/index');
 
 module.exports = (() => {
 
@@ -53,10 +53,15 @@ module.exports = (() => {
 				return res.status(401).json({ message: 'Incorrect password' });
 			}
 
-			const sessionId = uuidv4();
-			await Session.create({ token: sessionId, userId: user.id });
+			const session_id = uuidv4();
+			await Session.create({ token: session_id, user_id: user.id });
+			await User.update({ last_active_at: getCurrentTimeStamp() }, {
+				where: {
+					id: user.id
+				}
+			});
 
-			res.cookie('sessionId', sessionId, { httpOnly: true }); // Possibly add more cookie options
+			res.cookie('session_id', session_id, { httpOnly: true }); // Possibly add more cookie options
 			res.json({ message: 'Logged in!' });
 
 		} catch (error) {
@@ -67,18 +72,18 @@ module.exports = (() => {
 
 	user.post('/logout', async (req, res) => {
 		try {
-			const { sessionId } = req.cookies;
-			if (!sessionId) {
+			const { session_id } = req.cookies;
+			if (!session_id) {
 				return res.status(400).json({ message: 'No active session found' });
 			}
 
-			const session = await Session.findOne({ where: { token: sessionId } });
+			const session = await Session.findOne({ where: { token: session_id } });
 			if (session) {
 				await session.destroy();
 			}
 
 			// Possibly add more cookie options, like domain, secure, sameSite, etc
-			res.clearCookie('sessionId', { httpOnly: true });
+			res.clearCookie('session_id', { httpOnly: true });
 			res.json({ message: 'Logged out!' });
 
 		} catch (error) {

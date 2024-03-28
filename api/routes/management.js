@@ -18,7 +18,7 @@ const isAuthorizedForThat = async (req, res, next) => {
 	// 	const session = await Session.findOne({ where: { token: token } });
 	// 	if (!session) throw new Error("Session not found");
 
-	// 	const user = await User.findOne({ where: { id: session.userId } });
+	// 	const user = await User.findOne({ where: { id: session.user_id } });
 	// 	if (!user) throw new Error("User not found");
 
 	// 	// Check if user has the necessary permissions
@@ -57,9 +57,9 @@ module.exports = (() => {
 	management.post('/orgs/:method', isAuthorizedForThat, async (req, res) => {
 		// Include validations, try-catch and business logic as necessary
 		console.log(req.body)
-		// TODO: update looks like this: { lastName: "Doe" }, {
+		// TODO: update looks like this: { last_name: "Doe" }, {
 		//   where: {
-		//     lastName: null
+		//     last_name: null
 		//   }
 		// }
 		// so we'll have to create logic for the different methods but it would still work better than rewriting a ton of methods

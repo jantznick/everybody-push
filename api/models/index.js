@@ -9,16 +9,22 @@ const sequelize = new Sequelize(process.env.DATABASE_URL, {
 	dialectModule: pg
 })
 
+const getCurrentTimeStamp = () => {
+	var d = new Date(0);
+	d.setUTCSeconds(Date.now()/1000);
+	return d;
+}
+
 const User = sequelize.define('user', {
 	id: { type: Sequelize.STRING, primaryKey: true },
-	firstName: Sequelize.STRING,
-	lastName: Sequelize.STRING,
+	first_name: Sequelize.STRING,
+	last_name: Sequelize.STRING,
 	email: Sequelize.STRING,
 	password: Sequelize.STRING,
-	createdAt: Sequelize.DATE,
-	lastActiveAt: Sequelize.DATE,
-	subscriptionTier: Sequelize.STRING,
-	subscriptionStatus: Sequelize.STRING,
+	created_at: Sequelize.DATE,
+	last_active_at: Sequelize.DATE,
+	subscription_tier: Sequelize.STRING,
+	subscription_status: Sequelize.STRING,
 	org: Sequelize.ARRAY({ type: Sequelize.STRING,}),
 	team: Sequelize.ARRAY({ type: Sequelize.STRING }),
 	project: Sequelize.ARRAY({ type: Sequelize.STRING})
@@ -28,8 +34,9 @@ const User = sequelize.define('user', {
 			const salt = bcrypt.genSaltSync(10);
 			user.password = bcrypt.hashSync(user.password, salt);
 			user.id = uuidv4();
-			user.subscriptionTier = user.subscriptionTier || 'free'
-			user.subscriptionStatus = user.subscriptionStatus || 'not-paid'
+			user.last_active_At = getCurrentTimeStamp();
+			user.subscription_tier = user.subscription_tier || 'free'
+			user.subscription_status = user.subscription_status || 'not-paid'
 			user.org = user.org || []
 			user.team = user.team || []
 			user.project = user.project || []
@@ -89,24 +96,20 @@ const Task = sequelize.define('task', {
 	title: Sequelize.STRING,
 	status: Sequelize.STRING,
 	description: Sequelize.STRING,
-	createdAt: Sequelize.DATE,
-	dueDate: Sequelize.DATE
+	due_date: Sequelize.DATE
 }, {
 	hooks: {
 		beforeCreate: (task) => {
 			task.id = uuidv4();
-			var d = new Date(0);
-			d.setUTCSeconds(Date.now()/1000);
-			task.created_at = d
-			task.created_by = task.userId || 0
+			task.created_at = getCurrentTimeStamp();
+			task.created_by = task.user_id || 0
 			task.assignee = task.assignee || 0
 			task.done = task.done || false
 			task.project = task.project || []
 			task.title = task.title || ''
 			task.status = task.status || ''
 			task.description = task.description || ''
-			task.createdAt = d
-			task.dueDate = task.dueDate || null
+			task.due_date = task.dueDate || null
 		}
 	}
 });
@@ -125,7 +128,7 @@ const Comment = sequelize.define('comment', {
 	task: { type: Sequelize.STRING, references: { model: Task, key: 'id' } },
 	user: { type: Sequelize.STRING, references: { model: User, key: 'id' } },
 	content: Sequelize.STRING,
-	createdAt: Sequelize.DATE
+	created_at: Sequelize.DATE
 });
 
 const Tag = sequelize.define('tag', {
@@ -143,23 +146,23 @@ const Subtask = sequelize.define('subtask', {
 
 const LoginToken = sequelize.define('loginToken', {
 	token: { type: Sequelize.STRING, primaryKey: true, unique: true },
-	dateCreated: Sequelize.DATE,
+	date_created: Sequelize.DATE,
 	user: { type: Sequelize.STRING, references: { model: User, key: 'id' } },
-	shortCode: Sequelize.STRING,
+	short_code: Sequelize.STRING,
 	used: Sequelize.BOOLEAN
 });
 
 const ResetPasswordToken = sequelize.define('resetPasswordToken', {
 	token: { type: Sequelize.STRING, primaryKey: true, unique: true },
-	dateCreated: Sequelize.DATE,
+	date_created: Sequelize.DATE,
 	user: { type: Sequelize.STRING, references: { model: User, key: 'id' } },
-	shortCode: Sequelize.STRING,
+	short_code: Sequelize.STRING,
 	used: Sequelize.BOOLEAN
 });
 
 const Session = sequelize.define('session', {
 	token: { type: Sequelize.STRING, allowNull: false },
-	userId: { type: Sequelize.STRING, allowNull: false, references: { model: User, key: 'id' }}
+	user_id: { type: Sequelize.STRING, allowNull: false, references: { model: User, key: 'id' }}
 });
 
 sequelize.sync({ alter: true })
@@ -179,5 +182,6 @@ module.exports = {
 	User,
 	LoginToken,
 	ResetPasswordToken,
-	Session
+	Session,
+	getCurrentTimeStamp
 }
