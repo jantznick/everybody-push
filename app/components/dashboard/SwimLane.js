@@ -23,7 +23,11 @@ export const SwimLane = ({ lane, laneI, tasks, categories }) => {
                     />
                 }
             )}
-            <Droppable droppableId={lane.id + 'x'} >
+            {/* TODO: put these in order based on priority so that tasks moving around aren't so jerky */}
+            {/* Note: it might break order across swimlanes so might have to order categories based on swimlanes */}
+            {/* Note from above: same way categories have tasks, swimlanes will have to have orders */}
+            {/* Note: Categories will have to grow a little bit if there is a drag happening */}
+            <Droppable droppableId={lane.id} >
             {(provided, snapshot) => (
                 <div ref={provided.innerRef} {...provided.droppableProps} className={classNames(
                     "laneHolder",

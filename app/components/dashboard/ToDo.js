@@ -22,10 +22,9 @@ export const ToDo = ({ id, i, name, category, status }) => {
                     "items-center",
                     "bg-gray-300",
                     "hover:cursor-pointer",
-                    { 'line-through': status == 'done' }
                 )}
                 >
-                    <span>{name}</span>
+                    <span className={classNames({ 'line-through': status == 'done' })}>{name}</span>
                     <span className="hover:cursor-pointer material-symbols-outlined">edit</span>
                 </div>
             )}

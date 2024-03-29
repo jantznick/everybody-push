@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { DragDropContext } from '@hello-pangea/dnd';
 import classNames from 'classnames';
+import { v4 as uuidv4 } from 'uuid';
 
 import { SwimLane } from './SwimLane';
 
@@ -10,19 +11,19 @@ const data = {
     projects: ['Project 1'],
     categories: [
         {
-            id: 1,
+            id: 'aklsjdhf',
             title: 'Category One',
-            tasks: ['a', 'b'],
+            tasks: ['1dfha', '2ertewb'],
             priority: 0
         }, {
-            id: 2,
+            id: 'poquweiyr',
             title: 'Category Two',
-            tasks: ['c', 'd', 'e', 'f'],
+            tasks: ['3vvrfvfc', '4ikihhjd', '5xcvxce', '6ntyhnyf'],
             priority: 1
         }, {
-            id: 3,
+            id: 'mnxcbvmxv',
             title: 'Category Three',
-            tasks: ['g', 'h'],
+            tasks: ['7klopiog', '8xcvdfh'],
             priority: 2
         }
     ],
@@ -30,35 +31,35 @@ const data = {
         {
             name: 'Something to do',
             status: 'to-do',
-            id: 'a'
+            id: '1dfha'
         }, {
             name: 'Something else to do',
             status: 'to-do',
-            id: 'b'
+            id: '2ertewb'
         }, {
             name: 'Something to do that\'s in Category Two',
             status: 'to-do',
-            id: 'c'
+            id: '3vvrfvfc'
         }, {
             name: 'Something from Category Two to do',
             status: 'to-do',
-            id: 'd'
+            id: '4ikihhjd'
         }, {
             name: 'A very important task in progress',
             status: 'in-progress',
-            id: 'e'
+            id: '5xcvxce'
         }, {
             name: 'Another very important task that is in progress',
             status: 'in-progress',
-            id: 'f'
+            id: '6ntyhnyf'
         }, {
             name: 'A very important task to refine',
             status: 'refinement',
-            id: 'g'
+            id: '7klopiog'
         }, {
             name: 'A completed task',
             status: 'done',
-            id: 'h'
+            id: '8xcvdfh'
         },
     ]
 }
@@ -94,80 +95,114 @@ export const Dashboard = () => {
 
     const saveTask = () => {
         setAddingTask(false)
-    }
-
-	const finishDrag = (result) => {
-        console.log(result);
-        const { destination, source, draggableId } = result;
-
-		if (!destination) {
-			return;
-		}
-
-		if (destination.droppableId === source.droppableId &&
-			destination.index === source.index) {
-				return;
-		}
-
-        // lot of bugs in this logic should probably start over
-        const moved = tasks.filter(task => task.id === draggableId)[0];
-        const newLane = swimLanes.filter(lane => lane.id === Array.from(destination.droppableId)[0])[0].key;
-        const oldCategory = parseInt(Array.from(source.droppableId)[1]);
-        const oldCategoryData = categories.filter(category => category.id === oldCategory)[0];
-        const newCategory = Array.from(destination.droppableId)[1] === 'x' ? parseInt(Array.from(source.droppableId)[1]) : parseInt(Array.from(destination.droppableId)[1])
-        const newCategoryData = categories.filter(category => category.id === newCategory)[0]
-        const place = destination.index
-        tasks.splice(tasks.findIndex(task => task.id === draggableId), 1);
-        // remove old category
-        categories.splice(categories.findIndex(category => category.id === oldCategory), 1)
-        // remove new category if it's different than the old
-        if (newCategory != oldCategory) {
-            categories.splice(categories.findIndex(category => category.id === newCategory), 1)
-        }
-        // remove old category data task from tasks
-        oldCategoryData.tasks.splice(source.index, 1)
-        // if task only moved location then put it in new location
-        if (newCategory == oldCategory) {
-            oldCategoryData.tasks.splice(place, 0, draggableId)
-        } else if (newCategory != oldCategory) {
-            newCategoryData.tasks.splice(place, 0, draggableId)
-        }
-        // create new categories array
-        const newCategories = [...categories, oldCategoryData];
-        if (newCategory != oldCategory) {
-            newCategories.push(newCategoryData);
-        }
-        // sort new categories array
-        newCategories.sort((a, b) => parseFloat(a.priority) - parseFloat(b.priority))
+        const taskId = uuidv4();
         setTasks([
             ...tasks,
             {
-                ...moved,
-                status: newLane,
+                name: document.getElementById('addTaskInput').value,
+                status: document.getElementById('swimLanePicker').value,
+                id: taskId
             }
         ])
-        setCategories(newCategories)
+        const selectedCategory = document.getElementById('categoriesPicker').value
+        const newCategories = categories.map(category => category.id == selectedCategory ? (category.tasks.push(taskId), {...category, tasks: category.tasks}) : category)
+        setCategories([
+            ...newCategories
+        ])
+    }
+
+    const finishDrag = (result) => {
+        console.log(result);
+        const { destination, source, draggableId } = result;
+
+        if (!destination) {
+            return;
+        }
+        // TODO: validate this is accurate after update to data format change
+        if (destination.droppableId === source.droppableId &&
+            destination.index === source.index) {
+            return;
+        }
+
+        // TODO: if droppableId is 1 character that means the task only changed lanes, not to a new category
+        // droppableId of more than 1 character means the task changed lanes and new category, the first character is the new lane
+        // need to bug check this but it should work
+        const moved = tasks.filter(task => task.id === draggableId)[0];
+        const newLane = swimLanes.filter(lane => lane.id === Array.from(destination.droppableId)[0])[0];
+        const oldLane = swimLanes.filter(lane => lane.id === Array.from(source.droppableId)[0])[0];
+        const oldCategoryId = source.droppableId.slice(1);
+        const newCategoryId = destination.droppableId.slice(1);
+        // remove task from tasks if it changed lanes or changed categories
+        if (newLane.id != oldLane.id || oldCategoryId != newCategoryId) {
+            tasks.splice(tasks.findIndex(task => task.id === draggableId), 1);
+        }
+        // task only changed lanes
+        if (destination.droppableId.length == 1) {
+            // set tasks plus new task
+            setTasks([
+                ...tasks,
+                {
+                    ...moved,
+                    status: newLane.key,
+                }
+            ])
+        } else {
+            // get old category
+            const oldCategory = categories.filter(category => category.id == oldCategoryId)[0];
+            // remove moved task from old category
+            const taskIndexInOldCategory = oldCategory.tasks.findIndex(task => task == draggableId);
+            oldCategory.tasks.splice(taskIndexInOldCategory, 1);
+            // if category id is old category id, return the old category without the task, other wise return category
+            const categoriesWithTaskRemoved = categories.map(category => category.id == oldCategoryId ? oldCategory : category)
+            // get new category, even if its same as old
+            const newCategory = categoriesWithTaskRemoved.filter(category => category.id == newCategoryId)[0];
+            // add task to new category in proper spot
+            // TODO: tasks aren't broken out into categories until swimlane component so this isn't working right
+            newCategory.tasks.splice(destination.index, 0, draggableId)
+            // if category is new category return new category with task added, otherwise return category
+            const categoriesWithNewTaskAdded = categoriesWithTaskRemoved.map(category => category.id == newCategoryId ? newCategory : category)
+            setTasks([
+                ...tasks,
+                {
+                    ...moved,
+                    status: newLane.key,
+                }
+            ])
+            setCategories(categoriesWithNewTaskAdded)
+        }
+
     }
 
     return (
         <div id="dashboard" className="bg-gray-300 w-[85%] ml-[15%] min-h-screen">
             <div id="dashHeader" className="flex justify-start items-center px-4 py-8 uppercase">
                 <div>{data.orgs[0]} - {data.teams[0]} - {data.projects[0]} - To Do List</div>
-                {addingTask &&
+                {addingTask ?
                     <div className='ml-20 flex justify-center items-center bg-gray-300 border-2 border-black rounded-md p-2'>
-                        <input type="text" name="New Task" id="addTask" className='bg-gray-300 focus-visible:outline-none focus:outline-none'/>
+                        <input type="text" name="New Task" id="addTaskInput" placeholder='Add task...' className='bg-gray-300 focus-visible:outline-none focus:outline-none placeholder:text-black' />
+                        <select name="categories" id="categoriesPicker" className='p-2 bg-gray-300 mr-2'>
+                            {categories.map((category, index) => 
+                                <option value={category.id} key={index}>{category.title}</option>
+                            )}
+                        </select>
+                        <select name="swimLanes" id="swimLanePicker" className='p-2 bg-gray-300 mr-2'>
+                            {swimLanes.map((lane, index) => 
+                                <option value={lane.key}>{lane.title}</option>
+                            )}
+                        </select>
                         <span onClick={saveTask} className="hover:cursor-pointer material-symbols-outlined">save</span>
                     </div>
+                :
+                    <div onClick={addTask} className={classNames(
+                        "newTask",
+                        { "ml-4": addingTask },
+                        { "ml-20": !addingTask },
+                        "button"
+                    )}>
+                        NEW TASK
+                        <span className="material-symbols-outlined">add</span>
+                    </div>
                 }
-                <div onClick={addTask} className={classNames(
-                    "newTask",
-                    { "ml-4": addingTask },
-                    { "ml-20": !addingTask },
-                    "button"
-                )}>
-                    NEW TASK
-                    <span className="material-symbols-outlined">add</span>
-                </div>
             </div>
             <div className="lanes flex justify-between pb-4 min-h-[75%]">
 
