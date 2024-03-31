@@ -10,7 +10,10 @@
         @apply border-2 border-black p-2 rounded-md font-bold flex justify-center items-center transition ease-in-out duration-200 hover:bg-black hover:text-white hover:cursor-pointer
     }
     .float-background {
-        background-color: rgb(0 0 0 / 35%);
+        background-color: rgb(0 0 0 / 20%);
+    }
+    .float-background-dark {
+        background-color: rgb(0 0 0 / 30%);
     }
     .nav-org {
         @apply p-2 text-cyan-700 pl-1 text-2xl hover:cursor-pointer

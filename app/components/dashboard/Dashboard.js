@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useContext, createContext } from 'react';
 import { DragDropContext } from '@hello-pangea/dnd';
 import classNames from 'classnames';
 import { v4 as uuidv4 } from 'uuid';
 
 import { SwimLane } from './SwimLane';
+
+export const DraggingContext = createContext();
 
 const data = {
     orgs: ['Organization 1'],
@@ -88,6 +90,7 @@ export const Dashboard = () => {
     const [tasks, setTasks] = useState(data.tasks);
     const [categories, setCategories] = useState(data.categories);
     const [addingTask, setAddingTask] = useState(false);
+    const [isDragging, setIsDragging] = useState(false);
 
     const addTask = () => {
         setAddingTask(true);
@@ -112,6 +115,8 @@ export const Dashboard = () => {
     }
 
     const finishDrag = (result) => {
+        setIsDragging(false);
+
         console.log(result);
         const { destination, source, draggableId } = result;
 
@@ -173,55 +178,62 @@ export const Dashboard = () => {
 
     }
 
+    const startDrag = () => {
+        setIsDragging(true);
+    }
+
     return (
-        <div id="dashboard" className="bg-gray-300 w-[85%] ml-[15%] min-h-screen">
-            <div id="dashHeader" className="flex justify-start items-center px-4 py-8 uppercase">
-                <div>{data.orgs[0]} - {data.teams[0]} - {data.projects[0]} - To Do List</div>
-                {addingTask ?
-                    <div className='ml-20 flex justify-center items-center bg-gray-300 border-2 border-black rounded-md p-2'>
-                        <input type="text" name="New Task" id="addTaskInput" placeholder='Add task...' className='bg-gray-300 focus-visible:outline-none focus:outline-none placeholder:text-black' />
-                        <select name="categories" id="categoriesPicker" className='p-2 bg-gray-300 mr-2'>
-                            {categories.map((category, index) => 
-                                <option value={category.id} key={index}>{category.title}</option>
-                            )}
-                        </select>
-                        <select name="swimLanes" id="swimLanePicker" className='p-2 bg-gray-300 mr-2'>
-                            {swimLanes.map((lane, index) => 
-                                <option value={lane.key}>{lane.title}</option>
-                            )}
-                        </select>
-                        <span onClick={saveTask} className="hover:cursor-pointer material-symbols-outlined">save</span>
-                    </div>
-                :
-                    <div onClick={addTask} className={classNames(
-                        "newTask",
-                        { "ml-4": addingTask },
-                        { "ml-20": !addingTask },
-                        "button"
-                    )}>
-                        NEW TASK
-                        <span className="material-symbols-outlined">add</span>
-                    </div>
-                }
-            </div>
-            <div className="lanes flex justify-between pb-4 min-h-[75%]">
+        <DraggingContext.Provider value={isDragging}>
+            <div id="dashboard" className="bg-gray-300 w-[85%] ml-[15%] min-h-screen">
+                <div id="dashHeader" className="flex justify-start items-center px-4 py-8 uppercase">
+                    <div>{data.orgs[0]} - {data.teams[0]} - {data.projects[0]} - To Do List</div>
+                    {addingTask ?
+                        <div className='ml-20 flex justify-center items-center bg-gray-300 border-2 border-black rounded-md p-2'>
+                            <input type="text" name="New Task" id="addTaskInput" placeholder='Add task...' className='bg-gray-300 focus-visible:outline-none focus:outline-none placeholder:text-black' />
+                            <select name="categories" id="categoriesPicker" className='p-2 bg-gray-300 mr-2'>
+                                {categories.map((category, index) => 
+                                    <option value={category.id} key={index}>{category.title}</option>
+                                )}
+                            </select>
+                            <select name="swimLanes" id="swimLanePicker" className='p-2 bg-gray-300 mr-2'>
+                                {swimLanes.map((lane, index) => 
+                                    <option value={lane.key}>{lane.title}</option>
+                                )}
+                            </select>
+                            <span onClick={saveTask} className="hover:cursor-pointer material-symbols-outlined">save</span>
+                        </div>
+                    :
+                        <div onClick={addTask} className={classNames(
+                            "newTask",
+                            { "ml-4": addingTask },
+                            { "ml-20": !addingTask },
+                            "button"
+                        )}>
+                            NEW TASK
+                            <span className="material-symbols-outlined">add</span>
+                        </div>
+                    }
+                </div>
+                <div className="lanes flex justify-between pb-4 min-h-[75%]">
 
-                <DragDropContext
-                    onDragEnd={finishDrag}
-                >
-                    {/* loop through each swimlane and set the swim lane titles */}
-                    {swimLanes.map((lane, laneI) =>
-                        <SwimLane
-                            key={lane.key}
-                            categories={categories}
-                            tasks={tasks.filter(task => task.status == lane.key)}
-                            lane={lane}
-                            laneI={laneI}
-                        />
-                    )}
-                </DragDropContext>
+                    <DragDropContext
+                        onDragEnd={finishDrag}
+                        onDragStart={startDrag}
+                    >
+                        {/* loop through each swimlane and set the swim lane titles */}
+                        {swimLanes.map((lane, laneI) =>
+                            <SwimLane
+                                key={lane.key}
+                                categories={categories}
+                                tasks={tasks.filter(task => task.status == lane.key)}
+                                lane={lane}
+                                laneI={laneI}
+                            />
+                        )}
+                    </DragDropContext>
 
+                </div>
             </div>
-        </div>
+        </DraggingContext.Provider>
     )
 }
