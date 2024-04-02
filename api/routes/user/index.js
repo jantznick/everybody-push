@@ -3,7 +3,7 @@ const user = express.Router();
 const bcrypt = require('bcryptjs');
 const { v4: uuidv4 } = require('uuid');
 
-const { sequelize, User, Session, getCurrentTimeStamp } = require('../models/index');
+const { sequelize, User, Session, getCurrentTimeStamp } = require('../../models/index.js');
 
 module.exports = (() => {
 
@@ -18,6 +18,8 @@ module.exports = (() => {
 	user.get("/:handler", (req, res) => {
 		res.send("API user Call to: " + req.params.handler);
 	});
+
+    user.use("/lists", require('./lists.js'));
 
 	user.post('/create', async (req, res) => {
 		const { email, password } = req.body;

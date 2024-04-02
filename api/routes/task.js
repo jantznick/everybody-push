@@ -8,10 +8,7 @@ const {
     Tag
 } = require('../models');
 
-const isAuthorizedForThat = (req, res, next) => {
-    // your authorization logic here 
-    next();
-};
+const {isAuthorizedForThat} = require('../utils/authMiddleware')
 
 module.exports = (() => {
 

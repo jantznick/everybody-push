@@ -26,7 +26,6 @@ export const Category = ({ laneId, category, index, tasks }) => {
 						{"grow": isDragging},
 						{"pt-1": tasks.length > 0},
 						{"pb-4": tasks.length > 0},
-						// {"min-h-[100px]": isDragging},
 						{'float-background': isDragging},
 						{'float-background-dark': snapshot.isDraggingOver}
 					)}

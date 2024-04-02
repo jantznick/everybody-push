@@ -6,7 +6,7 @@ module.exports = (() => {
 		next();
 	})
 
-	api.use("/user", require('./user.js'));
+	api.use("/user", require('./user'));
 	api.use("/payment", require('./payment.js'));
 	api.use("/management", require('./management.js'));
 	api.use("/task", require('./task.js'));
