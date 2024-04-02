@@ -3,9 +3,8 @@ import classNames from "classnames";
 import { Draggable } from '@hello-pangea/dnd';
 
 export const ToDo = ({ id, i, name, category, status }) => {
-
     return (
-        <Draggable 
+        <Draggable
             draggableId={id}
             index={i}
             key={id}

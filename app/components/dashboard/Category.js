@@ -27,7 +27,6 @@ export const Category = ({ laneId, category, index, tasks }) => {
 						{"pt-1": tasks.length > 0},
 						{"pb-4": tasks.length > 0},
 						// {"min-h-[100px]": isDragging},
-						// changed from snapshot.isDraggingOver to isDragging for testing visual
 						{'float-background': isDragging},
 						{'float-background-dark': snapshot.isDraggingOver}
 					)}
