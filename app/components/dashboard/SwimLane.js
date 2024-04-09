@@ -14,10 +14,6 @@ export const SwimLane = ({ lane, laneI, tasks, categories }) => {
             <div className="swimLaneTitle p-4 uppercase border-b-black border-b-2">{lane.title}</div>
             <div className={classNames(
                     "categoryHolder",
-                    "flex",
-                    "flex-col",
-                    "justify-evenly",
-                    {"grow": isDragging}
                 )}>
                 {categories.map((category, index) => {
                     const categoryTasks = tasks.filter(task => category.tasks.includes(task.id))
@@ -31,19 +27,15 @@ export const SwimLane = ({ lane, laneI, tasks, categories }) => {
                     />}
                 )}
             </div>
-            {/* TODO: put these in order based on priority so that tasks moving around aren't so jerky */}
-            {/* Note: it might break order across swimlanes so might have to order categories based on swimlanes */}
-            {/* Note from above: same way categories have tasks, swimlanes will have to have orders */}
-            {/* Note: Categories will have to grow a little bit if there is a drag happening */}
-            {/* Note: make it bigger onDragStart, then if there's a drag over it make it even bigger with background */}
+            {/* TODO: Change this to grow based on a state set in on drag start so the size is caught properly? Might already be happening based on min-h to isDragging but not sure */}
             <Droppable droppableId={lane.id} >
             {(provided, snapshot) => (
                 <div ref={provided.innerRef} {...provided.droppableProps} className={classNames(
                     "laneHolder",
-                    "flex-grow",
                     "rounded-md",
                     "my-2",
                     {'float-background': isDragging},
+                    {'grow': isDragging},
                     {'float-background-dark': snapshot.isDraggingOver}
                 )}
                 >
