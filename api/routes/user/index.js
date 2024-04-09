@@ -3,7 +3,15 @@ const user = express.Router();
 const bcrypt = require('bcryptjs');
 const { v4: uuidv4 } = require('uuid');
 
-const { sequelize, User, Session, getCurrentTimeStamp } = require('../../models/index.js');
+const {
+	sequelize,
+	User,
+	Org,
+	Team,
+	Project,
+	Session,
+	getCurrentTimeStamp
+} = require('../../models/index.js');
 
 module.exports = (() => {
 
@@ -19,22 +27,70 @@ module.exports = (() => {
 		res.send("API user Call to: " + req.params.handler);
 	});
 
-    user.use("/lists", require('./lists.js'));
+	user.use("/lists", require('./lists.js'));
 
 	user.post('/create', async (req, res) => {
-		const { email, password } = req.body;
+		const { email, password, first_name, last_name } = req.body;
 
 		if (!email || !password) {
 			return res.status(400).json({ message: 'Email and password are required' });
 		}
+		// check if there's already a user with given email
+		const existingUser = await User.findOne({
+			where: {
+				email: email
+			}
+		})
+		if (existingUser) {
+			console.log('User exists');
+			res.status(200).json({ message: 'That user already exists' });
+		}
 
 		try {
-			const newUser = await User.create({ email, password });
+			const newUser = await User.create({ email, password, first_name, last_name });
+
+			const newOrg = await Org.create({
+				name: `${first_name}'s Organization`,
+				folder: `${first_name}s-organization`,
+				admin: [newUser.id]
+			})
+
+			const newTeam = await Team.create({
+				name: `${first_name}'s Team`,
+				org: newOrg.id,
+				folder: `${first_name}s-team`,
+				admin: [newUser.id]
+			})
+
+			const newProject = await Project.create({
+				name: `${first_name}'s Project`,
+				team: newTeam.id,
+				folder: `${first_name}s-project`,
+				admin: [newUser.id]
+			})
+
+			newUser.org = sequelize.fn('array_append', sequelize.col('org'), newOrg.id),
+			newUser.team = sequelize.fn('array_append', sequelize.col('team'), newTeam.id),
+			newUser.project = sequelize.fn('array_append', sequelize.col('project'), newProject.id)
+			newUser.last_active_at = getCurrentTimeStamp()
+
+			await newUser.save()
 
 			delete newUser.dataValues.password;
-			// todo: add session cookie to response to login user
+
 			// todo: setup verification email
-			res.json({ message: 'User created successfully', user: newUser });
+			const session_id = uuidv4();
+			await Session.create({ token: session_id, user_id: newUser.id });
+
+			res.cookie('session_id', session_id, { httpOnly: true }); // Possibly add more cookie options
+
+			res.json({
+				message: 'User created successfully',
+				user: newUser,
+				org: newOrg,
+				team: newTeam,
+				project: newProject
+			});
 		} catch (error) {
 			console.log(error);
 			res.status(500).json({ message: 'An error occurred during user creation' });
