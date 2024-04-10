@@ -27,6 +27,9 @@
     .nav-project-active {
         @apply bg-blue-400 text-black py-2
     }
+    .card {
+        @apply shadow-md rounded-lg p-4
+    }
 }
 
 * {

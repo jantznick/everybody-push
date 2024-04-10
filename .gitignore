@@ -11,3 +11,4 @@ everybodypushDB/*
 
 .env
 scratch/*
+seedTasks.csv

@@ -3,7 +3,7 @@ import React from 'react';
 
 export const LeftDrawer = () => {
 	return (
-		<div id="leftDrawer" className="fixed bg-blue-900 w-[15%] h-screen pt-10">
+		<div id="leftDrawer" className="bg-blue-900 w-[15%] h-screen pt-10">
             <div className="item nav-org my-2">Organization One</div>
 			<div className="item mt-2 nav-team">Team One</div>
 			<div className="item my-2 mt-0 nav-project nav-project-active">Project One</div>

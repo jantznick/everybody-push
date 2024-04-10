@@ -1,10 +1,3 @@
-// const { 
-//     list,
-//     Sublist,
-//     Comment,
-//     Tag
-// } = require('../models');
-
 const {
 	Session,
 	User,

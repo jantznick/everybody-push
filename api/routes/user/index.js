@@ -23,6 +23,38 @@ module.exports = (() => {
 		res.send('API user test call')
 	})
 
+	user.get("/info", async (req, res) => {
+		console.log(req.cookies);
+		try {
+			const token = req.cookies.session_id;
+			if (!token) {
+				res.status(200).json('nouser')
+				throw new Error("No token provided");
+			}
+
+			const session = await Session.findOne({ where: { token: token } });
+			if (!session) {
+				res.status(200).json('nouser')
+				throw new Error("Session not found");
+			}
+
+			const user = await User.findOne({ where: { id: session.user_id } });
+			delete user.dataValues.password
+
+			if (!user) {
+				res.status(200).json('nouser')
+				throw new Error("User not found");
+			}
+			// todo: get user orgs, teams and project info
+			// const orgs =
+
+			res.status(200).json(user)
+		} catch (error) {
+			console.log(error)
+		}
+
+	})
+
 	user.get("/:handler", (req, res) => {
 		res.send("API user Call to: " + req.params.handler);
 	});

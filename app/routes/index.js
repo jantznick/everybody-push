@@ -4,6 +4,7 @@ import { Route, Routes } from 'react-router-dom';
 import { App } from '../components/pages/App.js';
 import { EverybodyPush } from '../components/pages/EverybodyPush.js';
 import { NotFound } from '../components/pages/NotFound.js';
+import { Settings } from '../components/pages/Settings.js';
 
 const AppRoutes = () => {
 	return (
@@ -11,9 +12,11 @@ const AppRoutes = () => {
             {/* landing page */}
             <Route path="/" element={<App/>} />
             {/* app */}
-            <Route path="/app" element={<EverybodyPush/>} />
+            <Route path="/project/:projectId" exact element={<EverybodyPush/>} />
             {/* users self settings: */}
-            {/* <Route path="/settings" element={<Settings/>} /> */}
+            <Route path="/dashboard" element={<Settings/>} />
+            {/* <Route path="/org/:id" element={<Organization/>} /> */}
+            {/* <Route path="/team/:id" element={<Team/>} /> */}
             {/* admin user and project management */}
             {/* <Route path="/admin-dashboard" element={<AdminDashboard/>} /> */}
             <Route path="/404" element={<NotFound/>} />

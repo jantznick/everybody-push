@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import LoginForm from '../pages/LoginForm';
 
 export const PageWrapper = ({ children }) => {
-
 	const [showLogin, setShowLogin] = useState(false);
 
 	const handleLoginTrigger = () => {
@@ -21,7 +20,7 @@ export const PageWrapper = ({ children }) => {
 					<button onClick={handleLoginTrigger} className="link">Login</button>
 				</div>
 			</header>
-			<div id="body" className="grow">
+			<div id="body" className="grow flex justify-center">
 				{children &&
 					children
 				}
