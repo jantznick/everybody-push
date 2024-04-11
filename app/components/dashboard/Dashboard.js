@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { SwimLane } from './SwimLane';
 
-import { UserContext } from '../utils/AuthGate';
+import { UserContext } from '../utils/PageWrapper';
 
 export const DraggingContext = createContext();
 
