@@ -1,24 +1,54 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, createContext } from 'react';
+import { useNavigate, useLocation } from "react-router-dom";
+
+import { getUserInfo } from '../../utils/fetch';
+
 import LoginForm from '../pages/LoginForm';
+
+export const UserContext = createContext({});
 
 export const PageWrapper = ({ children }) => {
 	const [showLogin, setShowLogin] = useState(false);
+	const [userData, setUserData] = useState({})
+    const [hasUser, setHasUser] = useState(false);
+    let navigate = useNavigate();
+	const location = useLocation();
+
+    if (typeof window !== 'undefined' && !hasUser) {
+        const newUser = getUserInfo()
+        newUser.then(result => {
+            if (result == 'nouser') {
+                navigate("/");
+            } else {
+                setUserData(result)
+				// this is dumb and probably not needed but it feels like it should be here
+				if (location.pathname == "/") {
+					navigate("/dashboard")
+				}
+            }
+        })
+        setHasUser(true)
+    }
 
 	const handleLoginTrigger = () => {
 		setShowLogin(!showLogin);
 	};
 
 	return (
-		<>
+        <UserContext.Provider value={{...userData}}>
 			<header className='bg-blue-500 p-8 flex flex-wrap justify-between'>
 				<h1 className='font-bold text-3xl'>Everybody Push - Project Management</h1>
-				<div className="flex items-center transition-all hover:cursor-pointer hover:text-gray-600 md:hidden">
-					<span className="material-symbols-outlined text-[2rem]">menu</span>
+				{Object.keys(userData).length ? 
+                <div className="icons">
+					<a href="/dashboard"><span className="material-symbols-outlined text-2xl pr-8">dashboard</span></a>
+					<span className="material-symbols-outlined text-2xl pr-8">settings</span>
 				</div>
+				:
 				<div id="links" className='lg:space-x-8 hidden md:space-x-2 md:flex'>
 					<a href="/demo" className="link">Demo</a>
 					<button onClick={handleLoginTrigger} className="link">Login</button>
 				</div>
+				}
 			</header>
 			<div id="body" className="grow flex justify-center">
 				{children &&
@@ -45,6 +75,6 @@ export const PageWrapper = ({ children }) => {
 					<a href="#" className=''>Contact</a>
 				</div>
 			</footer>
-		</>
+		</UserContext.Provider>
 	)
 }

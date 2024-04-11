@@ -3,17 +3,17 @@ import {useParams} from "react-router-dom";
 
 import { LeftDrawer } from '../utils/LeftDrawer';
 import { Dashboard } from '../dashboard/Dashboard';
-import { AuthGate } from '../utils/AuthGate';
+import { PageWrapper } from '../utils/PageWrapper';
 
 export const EverybodyPush = () => {
     const {projectId} = useParams();
 
 	return (
-        <AuthGate>
+        <PageWrapper>
             {/* <div className="flex"> */}
                 {/* <LeftDrawer /> */}
                 <Dashboard projectId={projectId} />
             {/* </div> */}
-        </AuthGate>
+        </PageWrapper>
 	)
 }

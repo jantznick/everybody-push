@@ -46,9 +46,24 @@ module.exports = (() => {
 				throw new Error("User not found");
 			}
 			// todo: get user orgs, teams and project info
-			// const orgs =
+			const orgs = await Org.findAll({
+				where: {
+					id: user.org
+				}
+			});
+			const teams = await Team.findAll({
+				where: {
+					id: user.team
+				}
+			})
+			const projects = await Project.findAll({
+				where: {
+					id: user.project
+				}
+			})
 
-			res.status(200).json(user)
+
+			res.status(200).json({user, orgs, teams, projects})
 		} catch (error) {
 			console.log(error)
 		}

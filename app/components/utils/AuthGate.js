@@ -6,7 +6,7 @@ import { getUserInfo } from '../../utils/fetch';
 export const UserContext = createContext({});
 
 export const AuthGate = ({ children }) => {
-    const [user, setUser] = useState({})
+    const [userData, setUserData] = useState({})
     const [hasUser, setHasUser] = useState(false);
     let navigate = useNavigate()
 
@@ -16,14 +16,14 @@ export const AuthGate = ({ children }) => {
             if (result == 'nouser') {
                 navigate("/");
             } else {
-                setUser(result)
+                setUserData(result)
             }
         })
         setHasUser(true)
     }
 
 	return (
-        <UserContext.Provider value={{user: user}}>
+        <UserContext.Provider value={{...userData}}>
 			<header className='bg-blue-500 p-8 flex flex-wrap justify-between'>
 				<h1 className='font-bold text-3xl'>Everybody Push - Project Management</h1>
                 <div className="icons">
