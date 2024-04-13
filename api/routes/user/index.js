@@ -82,6 +82,7 @@ module.exports = (() => {
 		if (!email || !password) {
 			return res.status(400).json({ message: 'Email and password are required' });
 		}
+		// TODO: figure out how to do this so that a user can be invited by email and given permission to view things based on userId even if they haven't set a password yet. Maybe some combination of a basic 'default' password that's a random string and an account status tier of invited or something  
 		// check if there's already a user with given email
 		const existingUser = await User.findOne({
 			where: {
