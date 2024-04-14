@@ -51,6 +51,7 @@ const User = sequelize.define('user', {
 	email: Sequelize.STRING,
 	password: Sequelize.STRING,
 	created_at: Sequelize.DATE,
+	status: Sequelize.STRING,
 	last_active_at: Sequelize.DATE,
 	subscription_tier: Sequelize.STRING,
 	subscription_status: Sequelize.STRING,
@@ -61,7 +62,7 @@ const User = sequelize.define('user', {
 	hooks: {
 		beforeCreate: (user) => {
 			const salt = bcrypt.genSaltSync(10);
-			user.password = bcrypt.hashSync(user.password, salt);
+			user.password = bcrypt.hashSync(user.password ? user.password : '~~~~~~~~', salt);
 			user.id = uuidv4();
 			user.last_active_At = getCurrentTimeStamp();
 			user.subscription_tier = user.subscription_tier || 'free'
@@ -158,7 +159,14 @@ const Category = sequelize.define('category', {
 	name: Sequelize.STRING,
 	project: { type: Sequelize.STRING, references: { model: Project, key: 'id' } },
 	admin: Sequelize.ARRAY({ type: Sequelize.STRING, references: { model: User.id } }),
-	tasks: Sequelize.ARRAY({ type: Sequelize.STRING, references: { model: Task.id } })
+	tasks: Sequelize.ARRAY({ type: Sequelize.STRING, references: { model: Task.id } }),
+	priority: Sequelize.NUMBER
+}, {
+	hooks: {
+		beforeCreate: (category) => {
+			category.id = uuidv4();
+		}
+	}
 });
 
 const Comment = sequelize.define('comment', {
@@ -168,12 +176,24 @@ const Comment = sequelize.define('comment', {
 	user: { type: Sequelize.STRING, references: { model: User, key: 'id' } },
 	content: Sequelize.STRING,
 	created_at: Sequelize.DATE
+}, {
+	hooks: {
+		beforeCreate: (comment) => {
+			comment.id = uuidv4();
+		}
+	}
 });
 
 const Tag = sequelize.define('tag', {
 	id: { type: Sequelize.STRING, primaryKey: true },
 	name: Sequelize.STRING,
 	task: { type: Sequelize.STRING, references: { model: Task, key: 'id' } }
+}, {
+	hooks: {
+		beforeCreate: (tag) => {
+			tag.id = uuidv4();
+		}
+	}
 });
 
 const Subtask = sequelize.define('subtask', {
@@ -181,6 +201,12 @@ const Subtask = sequelize.define('subtask', {
 	done: Sequelize.BOOLEAN,
 	task: { type: Sequelize.STRING, references: { model: Task, key: 'id' } },
 	assignee: { type: Sequelize.STRING, references: { model: User, key: 'id' } }
+}, {
+	hooks: {
+		beforeCreate: (subtask) => {
+			subtask.id = uuidv4();
+		}
+	}
 });
 
 const LoginToken = sequelize.define('loginToken', {
@@ -189,6 +215,12 @@ const LoginToken = sequelize.define('loginToken', {
 	user: { type: Sequelize.STRING, references: { model: User, key: 'id' } },
 	short_code: Sequelize.STRING,
 	used: Sequelize.BOOLEAN
+}, {
+	hooks: {
+		beforeCreate: (loginToken) => {
+			loginToken.date_created = getCurrentTimeStamp()
+		}
+	}
 });
 
 const ResetPasswordToken = sequelize.define('resetPasswordToken', {
@@ -197,6 +229,12 @@ const ResetPasswordToken = sequelize.define('resetPasswordToken', {
 	user: { type: Sequelize.STRING, references: { model: User, key: 'id' } },
 	short_code: Sequelize.STRING,
 	used: Sequelize.BOOLEAN
+}, {
+	hooks: {
+		beforeCreate: (resetPasswordToken) => {
+			resetPasswordToken.date_created = getCurrentTimeStamp()
+		}
+	}
 });
 
 const Session = sequelize.define('session', {

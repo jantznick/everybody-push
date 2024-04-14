@@ -10,8 +10,12 @@ const {
 	Team,
 	Project,
 	Session,
+	ResetPasswordToken,
+	LoginToken,
 	getCurrentTimeStamp
 } = require('../../models/index.js');
+
+const {sendEmail} = require('../../utils/sendgrid');
 
 module.exports = (() => {
 
@@ -197,6 +201,129 @@ module.exports = (() => {
 			res.status(500).json({ message: 'An error occurred during logout' });
 		}
 	});
+
+	user.post('/invite', async (req, res) => {
+		try {
+			const { session_id } = req.cookies;
+			const { email, orgId, teamId, projectId, sendInviteEmail } = req.body;
+			console.log(req.body);
+			// TODO: Session ID only matters if user is being added to an organization?
+			// if (!session_id) {
+			// 	return res.status(400).json({ message: 'No active session found' });
+			// }
+
+			// check if there's already a user with given email
+			const existingUser = await User.findOne({
+				where: {
+					email: email
+				}
+			})
+			if (existingUser) {
+				console.log('User exists');
+				// TODO: update user to have access to whatever was given access too
+				res.status(200).json({ message: 'User has been invited to join this list' });
+			}
+			if (sendInviteEmail) {
+				const response = sendEmail({
+					email: email,
+					templateString: 'userInvite',
+					// TODO: add invite type id
+				});
+				response.then(emailStatus => {
+					console.log(emailStatus)
+					res.send({ status: 'email sent' })
+				}).catch(error => {
+					console.log(error);
+					res.send({ status: 'error', errorMessage: error })
+				})
+			}
+
+		} catch (error) {
+			console.log(error)
+			res.status(500).json({message: 'An error occured inviting a new user'})
+		}
+	})
+
+	user.post('/forgot-password', async (req, res) => {
+		try {
+			const { email } = req.body;
+			console.log(req.body);
+			// check if there's already a user with given email
+			const existingUser = await User.findOne({
+				where: {
+					email: email
+				}
+			})
+			if (!existingUser) {
+				// TODO: do something real here
+				console.log('User doesn\'t exist');
+				res.status(200).json({ message: 'User does not exist' });
+			}
+			const tokenInfo = ResetPasswordToken.create({
+				token: uuidv4(),
+				date_created: getCurrentTimeStamp(),
+				user: existingUser.id,
+				used: false
+			})
+			const response = sendEmail({
+				email: email,
+				templateString: 'resetPassword',
+				token: tokenInfo.token
+			});
+			response.then(emailStatus => {
+				console.log(emailStatus)
+				res.send({ status: 'email sent' })
+			}).catch(error => {
+				console.log(error);
+				res.send({ status: 'error', errorMessage: error })
+			})
+
+		} catch (error) {
+			console.log(error)
+			res.status(500).json({message: 'An error occured inviting a new user'})
+		}
+	})
+
+	user.post('/magic-login', async (req, res) => {
+		try {
+			const { email } = req.body;
+			console.log(req.body);
+			// check if there's already a user with given email
+			const existingUser = await User.findOne({
+				where: {
+					email: email
+				}
+			})
+			if (!existingUser) {
+				// TODO: do something real here
+				console.log('User doesn\'t exist');
+				res.status(200).json({ message: 'User does not exist' });
+			}
+			const loginTokenInfo = LoginToken.create({
+				token: uuidv4(),
+				date_created: getCurrentTimeStamp(),
+				user: existingUser.id,
+				used: false
+			})
+			const response = sendEmail({
+				email: email,
+				templateString: 'loginToken',
+				token: loginTokenInfo.token
+			});
+			response.then(emailStatus => {
+				console.log(emailStatus)
+				res.send({ status: 'email sent' })
+			}).catch(error => {
+				console.log(error);
+				res.send({ status: 'error', errorMessage: error })
+			})
+
+
+		} catch (error) {
+			console.log(error)
+			res.status(500).json({message: 'An error occured inviting a new user'})
+		}
+	})
 
 	user.use("*", (req, res) => {
 		res.send("API user CALL ENDED");
