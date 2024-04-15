@@ -3,14 +3,16 @@ import { useNavigate, useLocation } from "react-router-dom";
 
 import { getUserInfo } from '../../utils/fetch';
 
-import LoginForm from '../pages/LoginForm';
+import { Interstitial } from './Interstitial';
 
 export const UserContext = createContext({});
 
 export const PageWrapper = ({ children }) => {
-	const [showLogin, setShowLogin] = useState(false);
 	const [userData, setUserData] = useState({})
     const [hasUser, setHasUser] = useState(false);
+	const [showInterstitial, setShowInterstitial] = useState(false)
+	const [interstitialSlug, setInterstitialSlug] = useState('')
+
     let navigate = useNavigate();
 	const location = useLocation();
 
@@ -31,7 +33,8 @@ export const PageWrapper = ({ children }) => {
     }
 
 	const handleLoginTrigger = () => {
-		setShowLogin(!showLogin);
+		setInterstitialSlug('login');
+		setShowInterstitial(!showInterstitial);
 	};
 
 	return (
@@ -51,11 +54,11 @@ export const PageWrapper = ({ children }) => {
 				}
 			</header>
 			<div id="body" className="grow flex justify-center">
+				{showInterstitial && 
+					<Interstitial slug={interstitialSlug} setShowInterstitial={setShowInterstitial}/>
+				}
 				{children &&
 					children
-				}
-				{showLogin && 
-					<LoginForm setShowLogin={setShowLogin} />
 				}
 			</div>
 			<footer className='flex flex-wrap justify-between bg-cyan-700 text-gray-100 px-40 py-8'>

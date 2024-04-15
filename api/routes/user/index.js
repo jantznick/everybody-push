@@ -84,7 +84,10 @@ module.exports = (() => {
 		const { email, password, first_name, last_name } = req.body;
 
 		if (!email || !password) {
-			return res.status(400).json({ message: 'Email and password are required' });
+			return res.status(400).json({
+				message: 'Email and password are required',
+				slug: 'error'
+			});
 		}
 		// TODO: figure out how to do this so that a user can be invited by email and given permission to view things based on userId even if they haven't set a password yet. Maybe some combination of a basic 'default' password that's a random string and an account status tier of invited or something  
 		// check if there's already a user with given email
@@ -95,7 +98,10 @@ module.exports = (() => {
 		})
 		if (existingUser) {
 			console.log('User exists');
-			res.status(200).json({ message: 'That user already exists' });
+			return res.status(400).json({
+				message: 'User with that email already exists, try forgot password',
+				slug: 'error'
+			});
 		}
 
 		try {
@@ -136,7 +142,8 @@ module.exports = (() => {
 
 			res.cookie('session_id', session_id, { httpOnly: true }); // Possibly add more cookie options
 
-			res.json({
+			return res.status(200).json({
+				slug: 'registered',
 				message: 'User created successfully',
 				user: newUser,
 				org: newOrg,
@@ -145,7 +152,10 @@ module.exports = (() => {
 			});
 		} catch (error) {
 			console.log(error);
-			res.status(500).json({ message: 'An error occurred during user creation' });
+			res.status(500).json({
+				slug: 'error',
+				message: 'An error occurred during user creation'
+			});
 		}
 	});
 
@@ -155,12 +165,18 @@ module.exports = (() => {
 			const user = await User.findOne({ where: { email: email } });
 			console.log(user);
 			if (!user) {
-				return res.status(400).json({ message: 'No user with that email' });
+				return res.status(400).json({
+					message: 'No user with that email',
+					slug: 'error'
+				});
 			}
 
 			const validPassword = bcrypt.compareSync(password, user.password);
 			if (!validPassword) {
-				return res.status(401).json({ message: 'Incorrect password' });
+				return res.status(401).json({
+					message: 'Incorrect password',
+					slug: 'error'
+				});
 			}
 
 			const session_id = uuidv4();
@@ -172,11 +188,17 @@ module.exports = (() => {
 			});
 
 			res.cookie('session_id', session_id, { httpOnly: true }); // Possibly add more cookie options
-			res.json({ message: 'Logged in!' });
+			res.json({
+				message: 'Logged in!',
+				slug: 'loggedIn'
+			});
 
 		} catch (error) {
 			console.log(error);
-			res.status(500).json({ message: 'An error occurred during login' });
+			res.status(500).json({
+				message: 'An error occurred during login',
+				slug: 'error'
+			});
 		}
 	});
 
@@ -194,7 +216,10 @@ module.exports = (() => {
 
 			// Possibly add more cookie options, like domain, secure, sameSite, etc
 			res.clearCookie('session_id', { httpOnly: true });
-			res.json({ message: 'Logged out!' });
+			res.json({
+				message: 'Logged out!',
+				slug: 'loggedOut'
+			});
 
 		} catch (error) {
 			console.log(error);

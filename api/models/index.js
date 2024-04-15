@@ -160,7 +160,7 @@ const Category = sequelize.define('category', {
 	project: { type: Sequelize.STRING, references: { model: Project, key: 'id' } },
 	admin: Sequelize.ARRAY({ type: Sequelize.STRING, references: { model: User.id } }),
 	tasks: Sequelize.ARRAY({ type: Sequelize.STRING, references: { model: Task.id } }),
-	priority: Sequelize.NUMBER
+	priority: Sequelize.INTEGER
 }, {
 	hooks: {
 		beforeCreate: (category) => {

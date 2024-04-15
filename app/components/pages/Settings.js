@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import { useNavigate } from "react-router-dom";
 
 import { PageWrapper, UserContext } from '../utils/PageWrapper';
 
@@ -13,9 +14,28 @@ export const Settings = () => {
 const Auths = () => {
     const {user, orgs, teams, projects} = useContext(UserContext)
 
+    let navigate = useNavigate();
+
+    const handleLogout = () => {
+        fetch('/api/user/logout', {
+			method: "POST",
+			headers: {
+				"accept": "application/json, text/plain, */*",
+				"Content-Type": "application/json"
+			}
+		}).then(response => response.json())
+		.then(data => {
+			if (data.slug == 'loggedOut') {
+				navigate("/")
+			} else if (data.slug == 'error') {
+
+			}
+		})
+    }
+
     return (
         <div className="w-3/4 mt-4">
-            <div className='pb-4 text-xl'>User Dashboard</div>
+            <div className='pb-4 text-xl'>User Dashboard - <span className="hover:cursor-pointer" onClick={handleLogout}>logout</span></div>
             <div className="card">
                 <h1>{user?.first_name + ' ' + user?.last_name}</h1>
                 <h2>{user?.email}</h2>
