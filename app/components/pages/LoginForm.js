@@ -85,7 +85,7 @@ const LoginForm = ({setShowInterstitial}) => {
 	};
 
 	return (
-		<>
+		<div id="loginForm" className='w-[30vw]'>
 			<div className="flex justify-center w-full mb-4">
 				<span className="material-symbols-outlined mr-auto text-4xl text-white">close</span>
 				{!forgotPassword ?
@@ -210,7 +210,7 @@ const LoginForm = ({setShowInterstitial}) => {
 					</form>
 				</div>
 			)}
-		</>
+		</div>
 	);
 }
 
