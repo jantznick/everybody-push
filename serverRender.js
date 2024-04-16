@@ -39,6 +39,7 @@ app.get('*', (req,res) => {
 				<meta name="viewport" content="width=device-width, initial-scale=1.0">
 				<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
 				<link href="/css/style.css" rel="stylesheet">
+				<link href="/css/quill.snow.css" rel="stylesheet">
 			</head>
 			<body>
 				<div id="root" class="min-h-screen flex-col flex">${renderToString(

@@ -130,7 +130,7 @@ const Task = sequelize.define('task', {
 	id: { type: Sequelize.STRING, primaryKey: true },
 	created_at: Sequelize.DATE,
 	created_by: { type: Sequelize.STRING, references: { model: User, key: 'id' } },
-	assignee: { type: Sequelize.STRING, references: { model: User, key: 'id' } },
+	assignee: { type: Sequelize.STRING, allowNull: true, references: { model: User, key: 'id' } },
 	done: Sequelize.BOOLEAN,
 	project: { type: Sequelize.STRING, references: { model: Project, key: 'id' } },
 	title: Sequelize.STRING,
@@ -140,10 +140,10 @@ const Task = sequelize.define('task', {
 }, {
 	hooks: {
 		beforeCreate: (task) => {
-			task.id = uuidv4();
+			task.id = task.id || uuidv4();
 			task.created_at = getCurrentTimeStamp();
-			task.created_by = task.user_id || 0
-			task.assignee = task.assignee || 0
+			task.created_by = task.created_by || null
+			task.assignee = task.assignee || null
 			task.done = task.done || false
 			task.project = task.project || []
 			task.title = task.title || ''
@@ -156,7 +156,7 @@ const Task = sequelize.define('task', {
 
 const Category = sequelize.define('category', {
 	id: { type: Sequelize.STRING, primaryKey: true },
-	name: Sequelize.STRING,
+	title: Sequelize.STRING,
 	project: { type: Sequelize.STRING, references: { model: Project, key: 'id' } },
 	admin: Sequelize.ARRAY({ type: Sequelize.STRING, references: { model: User.id } }),
 	tasks: Sequelize.ARRAY({ type: Sequelize.STRING, references: { model: Task.id } }),

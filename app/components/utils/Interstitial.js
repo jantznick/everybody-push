@@ -1,7 +1,7 @@
 import { useContext } from "react";
 
 import LoginForm from '../pages/LoginForm';
-import Task from '../pages/Task';
+import EditTask from '../taskEditor/EditTask';
 
 import { TaskContext } from "../pages/EverybodyPush";
 
@@ -15,7 +15,7 @@ export const Interstitial = ({slug, setShowInterstitial}) => {
             break;
         // TODO: putting the task editor in an interstitial might break everything
         case 'task':
-            children = <Task task={task} setShowInterstitial={setShowInterstitial} />;
+            children = <EditTask task={task} setShowInterstitial={setShowInterstitial} />;
             break;
     }
 

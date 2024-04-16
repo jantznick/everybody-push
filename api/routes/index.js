@@ -10,6 +10,7 @@ module.exports = (() => {
 	api.use("/payment", require('./payment.js'));
 	api.use("/management", require('./management.js'));
 	api.use("/task", require('./task.js'));
+	api.use("/project", require('./project.js'));
 
 	api.get("/test", (req, res) => {
 		res.send("API test call");

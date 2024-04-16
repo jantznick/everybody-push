@@ -3,7 +3,7 @@ import classNames from "classnames";
 import { Draggable } from '@hello-pangea/dnd';
 import { useNavigate, useLocation } from "react-router-dom";
 
-export const ToDo = ({ id, i, name, category, status }) => {
+export const ToDo = ({ id, i, title, category, status }) => {
 	const navigate = useNavigate();
 	const location = useLocation();
 
@@ -31,7 +31,7 @@ export const ToDo = ({ id, i, name, category, status }) => {
                     "hover:cursor-pointer",
                 )}
                 >
-                    <span className={classNames({ 'line-through': status == 'done' })}>{name}</span>
+                    <span className={classNames({ 'line-through': status == 'done' })}>{title}</span>
                     <span onClick={handleEditClick} data-task-id={id} className="hover:cursor-pointer material-symbols-outlined">edit</span>
                 </div>
             )}

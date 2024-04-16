@@ -8,67 +8,31 @@ import { SwimLane } from './SwimLane';
 
 import { UserContext } from '../utils/PageWrapper';
 import { InterstitialContext } from '../utils/PageWrapper';
+import { getProjectTasks, saveTaskToServer } from '../../utils/fetch';
 
 export const DraggingContext = createContext();
 
 const data = {
-	orgs: ['Organization 1'],
-	teams: ['Team 1'],
-	projects: ['Project 1'],
-	categories: [
-		{
-			id: 'aklsjdhf',
-			title: 'Category One',
-			tasks: ['1dfha', '2ertewb'],
-			priority: 0
-		}, {
-			id: 'poquweiyr',
-			title: 'Category Two',
-			tasks: ['3vvrfvfc', '4ikihhjd', '5xcvxce', '6ntyhnyf'],
-			priority: 1
-		}, {
-			id: 'mnxcbvmxv',
-			title: 'Category Three',
-			tasks: ['7klopiog', '8xcvdfh'],
-			priority: 2
-		}
-	],
-	tasks: [
-		{
-			name: 'Something to do',
-			status: 'to-do',
-			id: '1dfha'
-		}, {
-			name: 'Something else to do',
-			status: 'to-do',
-			id: '2ertewb'
-		}, {
-			name: 'Something to do that\'s in Category Two',
-			status: 'to-do',
-			id: '3vvrfvfc'
-		}, {
-			name: 'Something from Category Two to do',
-			status: 'to-do',
-			id: '4ikihhjd'
-		}, {
-			name: 'A very important task in progress',
-			status: 'in-progress',
-			id: '5xcvxce'
-		}, {
-			name: 'Another very important task that is in progress',
-			status: 'in-progress',
-			id: '6ntyhnyf'
-		}, {
-			name: 'A very important task to refine',
-			status: 'refinement',
-			id: '7klopiog'
-		}, {
-			name: 'A completed task',
-			status: 'done',
-			id: '8xcvdfh'
-		},
-	]
+	// categories: [
+	// 	{
+	// 		id: 'aklsjdhf',
+	// 		title: 'Category One',
+	// 		tasks: ['1dfha', '2ertewb'],
+	// 		priority: 0
+	// 	}, {
+	// 		id: 'poquweiyr',
+	// 		title: 'Category Two',
+	// 		tasks: ['3vvrfvfc', '4ikihhjd', '5xcvxce', '6ntyhnyf'],
+	// 		priority: 1
+	// 	}, {
+	// 		id: 'mnxcbvmxv',
+	// 		title: 'Category Three',
+	// 		tasks: ['7klopiog', '8xcvdfh'],
+	// 		priority: 2
+	// 	}
+	// ]
 }
+
 
 const swimLanes = [
 	{
@@ -93,16 +57,31 @@ const swimLanes = [
 export const Dashboard = ({projectId, setSelectedTask}) => {
 	const location = useLocation();
 
-	const [tasks, setTasks] = useState(data.tasks);
-	const [categories, setCategories] = useState(data.categories);
+	const [tasks, setTasks] = useState([]);
+	const [categories, setCategories] = useState([]);
 	const [addingTask, setAddingTask] = useState(false);
 	const [isDragging, setIsDragging] = useState(false);
+	const [project, setProject] = useState('');
+	const [team, setTeam] = useState('');
+	const [org, setOrg] = useState('');
 	const [checkSelectedTask, setCheckSelectedTask] = useState(false);
 
 	const { user } = useContext(UserContext);
 	const { setShowInterstitial, setInterstitialSlug } = useContext(InterstitialContext);
 
 	useEffect(() => {
+		const endOfString = location.pathname.substring(9);
+		const slash = endOfString.indexOf('/');
+		const question = endOfString.indexOf('?');
+		const neither = slash == -1 && question == -1;
+		let firstOption = slash > question  ? '?' : '/';
+		if (slash == -1) {
+			firstOption = '?'
+		}
+		if (question == -1) {
+			firstOption = '/'
+		}
+		const projectId = neither ? endOfString : endOfString.substring(0, endOfString.indexOf(firstOption))
 		// A lot of this comes from stackoverflow, only skimmed but it seems pretty accurate
 		if (location.search) location.search.substr(1).split("&").forEach(function(item) {
 			var s = item.split("="),
@@ -114,28 +93,47 @@ export const Dashboard = ({projectId, setSelectedTask}) => {
 				setInterstitialSlug('task')
 			}
 		})
+		setProject(projectId);
+		const taskResponse = getProjectTasks(projectId);
+		taskResponse.then(response => {
+			setTasks(response.tasks);
+			setProject(response.project.name)
+			setTeam(response.team?.name)
+			setOrg(response.org?.name)
+		})
 	}, [location]);
 
 	const addTask = () => {
 		setAddingTask(true);
 	}
 
-	const saveTask = () => {
+	const saveTask = (detailed) => {
 		setAddingTask(false)
-		const taskId = uuidv4();
-		setTasks([
-			...tasks,
-			{
-				name: document.getElementById('addTaskInput').value,
-				status: document.getElementById('swimLanePicker').value,
-				id: taskId
-			}
-		])
-		const selectedCategory = document.getElementById('categoriesPicker').value
-		const newCategories = categories.map(category => category.id == selectedCategory ? (category.tasks.push(taskId), { ...category, tasks: category.tasks }) : category)
-		setCategories([
-			...newCategories
-		])
+		// const taskId = uuidv4();
+		if (detailed) {
+			setSelectedTask(taskId)
+			setShowInterstitial(true)
+			setInterstitialSlug('task')
+		}
+		const newTask = saveTaskToServer({
+			title: document.getElementById('addTaskInput').value,
+			status: document.getElementById('swimLanePicker').value,
+			done: document.getElementById('swimLanePicker').value == 'done',
+			created_by: 'fe9448ae-892b-4a00-a2fa-f26f821989e1',
+			project: '1e2ec7e1-c320-40aa-a710-909e83a085be'
+		})
+		newTask.then(response => {
+			setTasks([
+				...tasks,
+				response
+			])
+		})
+
+		// const selectedCategory = document.getElementById('categoriesPicker').value
+		// const newCategories = categories.map(category => category.id == selectedCategory ? (category.tasks.push(taskId), { ...category, tasks: category.tasks }) : category)
+		// setCategories([
+		// 	...newCategories
+		// ])
 	}
 
 	const finishDrag = (result) => {
@@ -202,7 +200,8 @@ export const Dashboard = ({projectId, setSelectedTask}) => {
 
 	}
 
-	const startDrag = () => {
+	const startDrag = (start) => {
+		console.log(start)
 		setIsDragging(true);
 	}
 
@@ -211,21 +210,26 @@ export const Dashboard = ({projectId, setSelectedTask}) => {
 			<div id="dashboard" className="bg-gray-300 min-h-screen w-full">
 				<div id="dashHeader" className="flex justify-between items-center px-4 py-8 uppercase">
 					<div className='flex items-center'>
-						<div>{data.orgs[0]} - {data.teams[0]} - {data.projects[0]} - To Do List</div>
+						<div>{org} - {team} - {project} - To Do List</div>
 						{addingTask ?
 							<div className='ml-20 flex justify-center items-center bg-gray-300 border-2 border-black rounded-md p-2'>
 								<input type="text" name="New Task" id="addTaskInput" placeholder='Add task...' className='bg-gray-300 focus-visible:outline-none focus:outline-none placeholder:text-black' />
-								<select name="categories" id="categoriesPicker" className='p-2 bg-gray-300 mr-2'>
-									{categories.map((category, index) =>
-										<option value={category.id} key={index}>{category.title}</option>
-									)}
-								</select>
+								{categories.length > 0 &&
+									<select name="categories" id="categoriesPicker" className='p-2 bg-gray-300 mr-2'>
+										{categories.map((category, index) =>
+											<option value={category.id} key={index}>{category.title}</option>
+										)}
+									</select>
+								}
 								<select name="swimLanes" id="swimLanePicker" className='p-2 bg-gray-300 mr-2'>
 									{swimLanes.map((lane, index) =>
-										<option value={lane.key}>{lane.title}</option>
+										<option value={lane.key} key={index}>{lane.title}</option>
 									)}
 								</select>
-								<span onClick={saveTask} className="hover:cursor-pointer material-symbols-outlined">save</span>
+								{/* TODO: change to be a button called save and add details or a save only button */}
+								<div onClick={() => saveTask(true)} className='button mr-2'>Save and Add Details</div>
+								<div onClick={() => saveTask(false)} className='button'>Save</div>
+								{/* <span onClick={saveTask} className="hover:cursor-pointer material-symbols-outlined">save</span> */}
 							</div>
 							:
 							<div onClick={addTask} className={classNames(

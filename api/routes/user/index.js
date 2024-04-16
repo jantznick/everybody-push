@@ -227,10 +227,11 @@ module.exports = (() => {
 		}
 	});
 
+	// TODO: add a route for user to finish creating an account that's been invited to
 	user.post('/invite', async (req, res) => {
 		try {
 			const { session_id } = req.cookies;
-			const { email, inviteEntity, entityId, sendInviteEmail } = req.body;
+			const { giveeEmail, giverId, entityType, entityId, sendInviteEmail } = req.body;
 			console.log(req.body);
 			// TODO: Session ID only matters if user is being added to an organization?
 			// if (!session_id) {
@@ -246,7 +247,7 @@ module.exports = (() => {
 			if (existingUser) {
 				console.log('User exists');
 				// TODO: update user to have access to whatever was given access too
-				res.status(200).json({ message: 'User has been invited to join this list' });
+				res.status(200).json({ message: 'User has been given access to this entity' });
 			}
 			if (!existingUser && sendInviteEmail) {
 				const response = sendEmail({
