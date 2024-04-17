@@ -12,6 +12,7 @@ const {
 	Session,
 	ResetPasswordToken,
 	LoginToken,
+	VerifyAccountToken,
 	getCurrentTimeStamp
 } = require('../../models/index.js');
 
@@ -136,7 +137,21 @@ module.exports = (() => {
 
 			delete newUser.dataValues.password;
 
-			// todo: setup verification email
+			const { token } = await VerifyAccountToken.create({
+				user: newUser.id
+			})
+			const emailSend = sendEmail({
+				email: newUser.email,
+				token: token,
+				templateString: 'emailConfirm'
+			})
+			emailSend.then(emailStatus => {
+				console.log('email sent');
+				console.log(emailStatus);
+			}).catch(error => {
+				console.log('email not sent');
+				console.log(error);
+			})
 			const session_id = uuidv4();
 			await Session.create({ token: session_id, user_id: newUser.id });
 
@@ -151,6 +166,8 @@ module.exports = (() => {
 				project: newProject
 			});
 		} catch (error) {
+			// TODO: Delete everything created if there was an error?
+			// or just recreate whatever wasn't created?
 			console.log(error);
 			res.status(500).json({
 				slug: 'error',

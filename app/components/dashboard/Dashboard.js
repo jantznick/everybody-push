@@ -109,7 +109,7 @@ export const Dashboard = ({projectId, setSelectedTask}) => {
 
 	const saveTask = (detailed) => {
 		setAddingTask(false)
-		// const taskId = uuidv4();
+		const taskId = uuidv4();
 		if (detailed) {
 			setSelectedTask(taskId)
 			setShowInterstitial(true)
@@ -119,8 +119,9 @@ export const Dashboard = ({projectId, setSelectedTask}) => {
 			title: document.getElementById('addTaskInput').value,
 			status: document.getElementById('swimLanePicker').value,
 			done: document.getElementById('swimLanePicker').value == 'done',
-			created_by: 'fe9448ae-892b-4a00-a2fa-f26f821989e1',
-			project: '1e2ec7e1-c320-40aa-a710-909e83a085be'
+			created_by: user.id,
+			project: projectId,
+			id: taskId
 		})
 		newTask.then(response => {
 			setTasks([
@@ -137,9 +138,9 @@ export const Dashboard = ({projectId, setSelectedTask}) => {
 	}
 
 	const finishDrag = (result) => {
+		console.log(result);
 		setIsDragging(false);
 
-		console.log(result);
 		const { destination, source, draggableId } = result;
 
 		if (!destination) {
@@ -164,7 +165,7 @@ export const Dashboard = ({projectId, setSelectedTask}) => {
 			tasks.splice(tasks.findIndex(task => task.id === draggableId), 1);
 		}
 		// task only changed lanes
-		if (destination.droppableId.length == 1) {
+		if (destination.droppableId.length == 1 && destination.droppableId != source.droppableId) {
 			// set tasks plus new task
 			setTasks([
 				...tasks,
@@ -174,6 +175,7 @@ export const Dashboard = ({projectId, setSelectedTask}) => {
 				}
 			])
 		} else {
+			// TODO: This is all wrong if there aren't categories and needs to be fixed
 			// get old category
 			const oldCategory = categories.filter(category => category.id == oldCategoryId)[0];
 			// remove moved task from old category
@@ -200,8 +202,7 @@ export const Dashboard = ({projectId, setSelectedTask}) => {
 
 	}
 
-	const startDrag = (start) => {
-		console.log(start)
+	const startDrag = () => {
 		setIsDragging(true);
 	}
 

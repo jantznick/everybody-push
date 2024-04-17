@@ -62,7 +62,7 @@ const Auths = () => {
                                         </div>
                                         {teamProjects.map((project, projectI) => (
                                             <div className="projectTitle pl-8 pb-4" key={projectI}>
-                                                {project.name} - {project.admin.includes(user.id) ? <span className="hover:cursor-pointer material-symbols-outlined">edit</span> : null}
+                                                <a href={`/project/${project.id}`}>{project.name} - {project.admin.includes(user.id) ? <span className="hover:cursor-pointer material-symbols-outlined">edit</span> : null}</a>
                                             </div>
                                         ))}
                                     </>

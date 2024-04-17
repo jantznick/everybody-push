@@ -31,9 +31,11 @@ module.exports = (() => {
 			const createdTask = await Task.create(req.body);
 			res.status(200).json(createdTask);
 		} catch (error) {
+			console.log(error);
 			res.status(400).json({
 				slug: 'error',
-				message: 'Error saving task to database'
+				message: 'Error saving task to database',
+				error: JSON.stringify(error)
 			})
 		}
 	});

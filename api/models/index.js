@@ -229,10 +229,17 @@ const ResetPasswordToken = sequelize.define('resetPasswordToken', {
 	user: { type: Sequelize.STRING, references: { model: User, key: 'id' } },
 	short_code: Sequelize.STRING,
 	used: Sequelize.BOOLEAN
+});
+
+const VerifyAccountToken = sequelize.define('verifyAccountToken', {
+	token: { type: Sequelize.STRING, primaryKey: true, unique: true },
+	date_created: Sequelize.DATE,
+	user: { type: Sequelize.STRING, references: { model: User, key: 'id' } },
 }, {
 	hooks: {
-		beforeCreate: (resetPasswordToken) => {
-			resetPasswordToken.date_created = getCurrentTimeStamp()
+		beforeCreate: (verifyAccountToken) => {
+			verifyAccountToken.token = uuidv4()
+			verifyAccountToken.date_created = getCurrentTimeStamp()
 		}
 	}
 });
@@ -260,5 +267,6 @@ module.exports = {
 	LoginToken,
 	ResetPasswordToken,
 	Session,
+	VerifyAccountToken,
 	getCurrentTimeStamp
 }

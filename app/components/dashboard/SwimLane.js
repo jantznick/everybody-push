@@ -15,6 +15,9 @@ export const SwimLane = ({ lane, laneI, tasks, categories }) => {
             <div className="swimLaneTitle p-4 uppercase border-b-black border-b-2">{lane.title}</div>
             <div className={classNames(
                     "categoryHolder",
+                    "grow",
+                    "flex",
+                    "flex-col"
                 )}>
                 {
                 categories.length ?
@@ -36,7 +39,7 @@ export const SwimLane = ({ lane, laneI, tasks, categories }) => {
                         <div ref={provided.innerRef} {...provided.droppableProps} className={classNames(
                             "laneHolder",
                             "rounded-md",
-                            "my-2",
+                            "mt-2",
                             {'float-background': isDragging},
                             {'grow': isDragging},
                             {'float-background-dark': snapshot.isDraggingOver}
@@ -54,8 +57,10 @@ export const SwimLane = ({ lane, laneI, tasks, categories }) => {
                             "taskContainer",
                             "rounded-md",
                             {"grow": isDragging},
-                            {"pt-1": tasks.length > 0},
-                            {"pb-4": tasks.length > 0},
+                            "pt-1",
+                            "pb-4",
+                            "mt-2",
+                            // "grow",
                             {'float-background': isDragging},
                             {'float-background-dark': snapshot.isDraggingOver}
                         )}

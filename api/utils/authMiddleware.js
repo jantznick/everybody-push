@@ -19,7 +19,7 @@ export const isAuthorizedForThat = async (req, res, next) => {
 
 		// Check if user has the necessary permissions
 		// As an example, check if user belongs to the same org
-		const taskId = req.params.taskId || req.body.taskId || 'zxcviu-234234-szdcxv-234-dv'; // depends on your endpoint
+		const taskId = req.params.taskId || req.body.taskId; // depends on your endpoint
 		const task = await Task.findOne({ where: { id: taskId } });
 
 		console.log(task)
