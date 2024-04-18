@@ -223,14 +223,14 @@ export const Dashboard = ({projectId, setSelectedTask}) => {
 		<DraggingContext.Provider value={isDragging}>
 			<div id="dashboard" className="bg-gray-300 min-h-screen w-full">
 				<div id="dashHeader" className="flex justify-between items-center px-4 py-8 uppercase">
-					<div className='flex items-center'>
+					<div className='flex items-center w-full'>
 						<div>{org} - {team} - {project} - To Do List</div>
 						{addingTask ?
-							<div className='ml-20 flex justify-center items-center bg-gray-300 border-2 border-black rounded-md p-2'>
-								<input type="text" name="New Task" id="addTaskInput" placeholder='Add task...' className='bg-gray-300 focus-visible:outline-none focus:outline-none placeholder:text-black' />
+							<div className='ml-8 flex max-w-[70%] justify-center items-center bg-gray-300 border-2 border-black rounded-md p-2'>
+								<span role="textbox" contentEditable type="text" name="New Task" id="addTaskInput" placeholder='Add task...' className='overflow-scroll mr-4 whitespace-nowrap 	bg-gray-300 focus-visible:outline-none focus:outline-none placeholder:text-black'>Add a task...</span>
 								{categories.length > 0 &&
 									<Select>
-										<SelectTrigger className="w-[180px]">
+										<SelectTrigger>
 											<SelectValue placeholder="Select Category" />
 										</SelectTrigger>
 										<SelectContent>
@@ -241,20 +241,16 @@ export const Dashboard = ({projectId, setSelectedTask}) => {
 									</Select>
 								}
 								<Select onValueChange={handleNewTaskSwimlaneSelection}>
-									<SelectTrigger className="w-[180px]">
+									<SelectTrigger className="min-w-[10rem]">
 										<SelectValue placeholder="Select a Status" />
 									</SelectTrigger>
 									<SelectContent>
 										{swimLanes.map((lane, index) =>
 											<SelectItem value={lane.key} key={index}>{lane.title}</SelectItem>
 										)}
-										{/* <SelectItem value="light">Light</SelectItem>
-										<SelectItem value="dark">Dark</SelectItem>
-										<SelectItem value="system">System</SelectItem> */}
 									</SelectContent>
 								</Select>
-								{/* TODO: change to be a button called save and add details or a save only button */}
-								<div onClick={() => saveTask(true)} className='button mr-2'>Save and Add Details</div>
+								<div onClick={() => saveTask(true)} className='button mr-2 whitespace-nowrap'>Save and Add Details</div>
 								<div onClick={() => saveTask(false)} className='button'>Save</div>
 								{/* <span onClick={saveTask} className="hover:cursor-pointer material-symbols-outlined">save</span> */}
 							</div>
