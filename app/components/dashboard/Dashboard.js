@@ -4,6 +4,14 @@ import classNames from 'classnames';
 import { v4 as uuidv4 } from 'uuid';
 import { useLocation } from "react-router-dom";
 
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+  } from "../ui/select"  
+
 import { SwimLane } from './SwimLane';
 
 import { UserContext } from '../utils/PageWrapper';
@@ -216,17 +224,30 @@ export const Dashboard = ({projectId, setSelectedTask}) => {
 							<div className='ml-20 flex justify-center items-center bg-gray-300 border-2 border-black rounded-md p-2'>
 								<input type="text" name="New Task" id="addTaskInput" placeholder='Add task...' className='bg-gray-300 focus-visible:outline-none focus:outline-none placeholder:text-black' />
 								{categories.length > 0 &&
-									<select name="categories" id="categoriesPicker" className='p-2 bg-gray-300 mr-2'>
-										{categories.map((category, index) =>
-											<option value={category.id} key={index}>{category.title}</option>
-										)}
-									</select>
+									<Select>
+										<SelectTrigger className="w-[180px]">
+											<SelectValue placeholder="Select Category" />
+										</SelectTrigger>
+										<SelectContent>
+											{categories.map((category, index) =>
+												<SelectItem value={category.id} key={index}>{category.title}</SelectItem>
+											)}
+										</SelectContent>
+									</Select>
 								}
-								<select name="swimLanes" id="swimLanePicker" className='p-2 bg-gray-300 mr-2'>
-									{swimLanes.map((lane, index) =>
-										<option value={lane.key} key={index}>{lane.title}</option>
-									)}
-								</select>
+								<Select id="swimLanePicker">
+									<SelectTrigger className="w-[180px]">
+										<SelectValue placeholder="Select a Status" />
+									</SelectTrigger>
+									<SelectContent>
+										{swimLanes.map((lane, index) =>
+											<SelectItem value={lane.key} key={index}>{lane.title}</SelectItem>
+										)}
+										{/* <SelectItem value="light">Light</SelectItem>
+										<SelectItem value="dark">Dark</SelectItem>
+										<SelectItem value="system">System</SelectItem> */}
+									</SelectContent>
+								</Select>
 								{/* TODO: change to be a button called save and add details or a save only button */}
 								<div onClick={() => saveTask(true)} className='button mr-2'>Save and Add Details</div>
 								<div onClick={() => saveTask(false)} className='button'>Save</div>

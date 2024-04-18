@@ -17,7 +17,7 @@ const use = {
 
 const tsUse = {
 	  test: /\.tsx?$/,
-	  use: 'ts-loader',
+	  use: 'babel-loader',
 	  exclude: /node_modules/,
 }
 
