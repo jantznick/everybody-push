@@ -68,6 +68,7 @@ export const Dashboard = ({projectId, setSelectedTask}) => {
 	const [tasks, setTasks] = useState([]);
 	const [categories, setCategories] = useState([]);
 	const [addingTask, setAddingTask] = useState(false);
+	const [newTaskLane, setNewTaskLane] = useState('');
 	const [isDragging, setIsDragging] = useState(false);
 	const [project, setProject] = useState('');
 	const [team, setTeam] = useState('');
@@ -125,8 +126,8 @@ export const Dashboard = ({projectId, setSelectedTask}) => {
 		}
 		const newTask = saveTaskToServer({
 			title: document.getElementById('addTaskInput').value,
-			status: document.getElementById('swimLanePicker').value,
-			done: document.getElementById('swimLanePicker').value == 'done',
+			status: newTaskLane,
+			done: newTaskLane == 'done',
 			created_by: user.id,
 			project: projectId,
 			id: taskId
@@ -214,6 +215,10 @@ export const Dashboard = ({projectId, setSelectedTask}) => {
 		setIsDragging(true);
 	}
 
+	const handleNewTaskSwimlaneSelection = (lane) => {
+		setNewTaskLane(lane);
+	}
+
 	return (
 		<DraggingContext.Provider value={isDragging}>
 			<div id="dashboard" className="bg-gray-300 min-h-screen w-full">
@@ -235,7 +240,7 @@ export const Dashboard = ({projectId, setSelectedTask}) => {
 										</SelectContent>
 									</Select>
 								}
-								<Select id="swimLanePicker">
+								<Select onValueChange={handleNewTaskSwimlaneSelection}>
 									<SelectTrigger className="w-[180px]">
 										<SelectValue placeholder="Select a Status" />
 									</SelectTrigger>

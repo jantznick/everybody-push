@@ -3,6 +3,7 @@ import classNames from "classnames";
 import { useNavigate, useLocation } from "react-router-dom";
 
 import { getTaskInfo } from '../../utils/fetch';
+import Tiptap from '../utils/TipTap';
 
 const Tags = () => {
 	return (
@@ -30,7 +31,7 @@ const EditTask = ({ setShowInterstitial, task }) => {
 	const [taskInfo, setTaskInfo] = useState({});
 
 	const [fullWidthComments, setFullWidthComments] = useState(false);
-	const [isEditingDescription, setIsEditingDescription] = useState(false);
+	const [isEditingDescription, setIsEditingDescription] = useState(true);
 
 	useEffect(() => {
 		const fetchedTaskInfo = getTaskInfo(task);
@@ -62,12 +63,9 @@ const EditTask = ({ setShowInterstitial, task }) => {
 						<DescriptionTop />
 						<div className="description h-60">
 							<div className=''>Description:</div>
-							{isEditingDescription ? 
-								// TODO: put editor here
-								<div>Rich Text Editor</div>
-							:
-								{html}
-							}
+							<div className='RTE'>
+								<Tiptap />
+							</div>
 						</div>
 						<Tags />
 					</div>
@@ -93,7 +91,9 @@ const EditTask = ({ setShowInterstitial, task }) => {
 				<div className="containThings flex flex-col gap-6 w-[64%]">
 					<div className="taskDetails bg-gray-500 shadow-lg">
 						<DescriptionTop />
-							<div>Rich Text Editor</div>
+						<div className='RTE'>
+							<Tiptap />
+						</div>
 						<Tags />
 					</div>
 					<div className={classNames(
