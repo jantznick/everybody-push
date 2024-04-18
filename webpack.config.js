@@ -1,7 +1,7 @@
 const webpack = require('webpack');
 
 const use = {
-    test: /js$/,
+    test: /\.(js|jsx|tsx|ts)$/,
     exclude: /node_modules/,
     loader: 'babel-loader',
     options: {
@@ -9,9 +9,16 @@ const use = {
             ['@babel/preset-env', {
                 targets: "defaults"
             }],
-            ['@babel/preset-react', {"runtime": "automatic"}]
+            ['@babel/preset-react', {"runtime": "automatic"}],
+			"@babel/preset-typescript"
         ]
     }
+}
+
+const tsUse = {
+	  test: /\.tsx?$/,
+	  use: 'ts-loader',
+	  exclude: /node_modules/,
 }
 
 const browserConfig = {
@@ -23,6 +30,9 @@ const browserConfig = {
 	devtool: "cheap-module-source-map",
 	module: {
 		rules: [use]
+	},
+	resolve: {
+		extensions: ['*', '.js', '.jsx', '.tsx', '.ts'],
 	},
 	mode: "development"
 };
@@ -38,6 +48,9 @@ const serverConfig = {
 	devtool: "cheap-module-source-map",
 	module: {
 		rules: [use]
+	},
+	resolve: {
+		extensions: ['*', '.js', '.jsx', '.tsx', '.ts'],
 	},
 	mode: "development"
 };
