@@ -79,3 +79,20 @@ export const saveTaskToServer = async (taskData) => {
         return error
     }
 }
+
+export const verifyEmail = async (verifyToken) => {
+    try {
+        const response = await fetch('/api/user/verify', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "accept": "application/json",
+            },
+            body: JSON.stringify({token: verifyToken})
+        });
+        const data = await response.json();
+        return data
+    } catch (error) {
+        return error
+    }
+}

@@ -368,6 +368,8 @@ module.exports = (() => {
 		}
 	})
 
+	// TODO create verify email route
+
 	user.use("*", (req, res) => {
 		res.send("API user CALL ENDED");
 	});

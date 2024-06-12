@@ -79,6 +79,7 @@ export const Dashboard = ({projectId, setSelectedTask}) => {
 	const { setShowInterstitial, setInterstitialSlug } = useContext(InterstitialContext);
 
 	useEffect(() => {
+		// TODO: figure out what this does
 		const endOfString = location.pathname.substring(9);
 		const slash = endOfString.indexOf('/');
 		const question = endOfString.indexOf('?');

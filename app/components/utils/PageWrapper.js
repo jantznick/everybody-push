@@ -17,21 +17,22 @@ export const PageWrapper = ({ children }) => {
     let navigate = useNavigate();
 	const location = useLocation();
 
+	// TODO: figure this out
     if (typeof window !== 'undefined' && !hasUser) {
-		console.log('getting user info');
-        const newUser = getUserInfo()
-        newUser.then(result => {
-            if (result == 'nouser') {
-                navigate("/");
-            } else {
-                setUserData(result)
-				// this is dumb and probably not needed but it feels like it should be here
-				if (location.pathname == "/") {
-					navigate("/dashboard")
-				}
-            }
-        })
-        setHasUser(true)
+		// console.log('getting user info');
+        // const newUser = getUserInfo()
+        // newUser.then(result => {
+        //     if (result == 'nouser') {
+        //         navigate("/");
+        //     } else {
+        //         setUserData(result)
+		// 		// this is dumb and probably not needed but it feels like it should be here
+		// 		if (location.pathname == "/") {
+		// 			navigate("/dashboard")
+		// 		}
+        //     }
+        // })
+        // setHasUser(true)
     }
 
 	const handleLoginTrigger = () => {

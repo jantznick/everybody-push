@@ -5,6 +5,7 @@ import { App } from '../components/pages/App.js';
 import { EverybodyPush } from '../components/pages/EverybodyPush.js';
 import { NotFound } from '../components/pages/NotFound.js';
 import { Settings } from '../components/pages/Settings.js';
+import { VerifyEmail } from '../components/pages/VerifyEmail.js';
 
 const AppRoutes = () => {
 	return (
@@ -13,6 +14,7 @@ const AppRoutes = () => {
             <Route path="/" element={<App/>} />
             {/* app */}
             <Route path="/project/:projectId" exact element={<EverybodyPush/>} />
+			<Route path="/verify-email" element={<VerifyEmail/>} />
             {/* users self settings: */}
             <Route path="/dashboard" element={<Settings/>} />
             {/* <Route path="/org/:id" element={<Organization/>} /> */}

@@ -50,7 +50,6 @@ const User = sequelize.define('user', {
 	last_name: Sequelize.STRING,
 	email: Sequelize.STRING,
 	password: Sequelize.STRING,
-	created_at: Sequelize.DATE,
 	status: Sequelize.STRING,
 	last_active_at: Sequelize.DATE,
 	subscription_tier: Sequelize.STRING,
