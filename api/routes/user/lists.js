@@ -1,7 +1,7 @@
 const express = require('express');
 const list = express.Router();
 
-const {isAuthorizedForThat} = require('../../utils/authMiddleware')
+const { isAuthorizedForThat } = require('../../utils/authMiddleware')
 
 // const { 
 //     list,
@@ -16,6 +16,17 @@ module.exports = (() => {
 		next();
 	})
 
+	/**
+	 * @openapi
+	 * /api/user/list/test:
+	 *   get:
+	 *     description: Test API Index Route!
+	 *     tags:
+	 *      - Lists
+	 *     responses:
+	 *       200:
+	 *         description: Returns API test call.
+	 */
 	list.get("/test", (req, res) => {
 		res.send('API list test call')
 	})

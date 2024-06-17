@@ -16,7 +16,7 @@ const {
 	getCurrentTimeStamp
 } = require('../../models/index.js');
 
-const {sendEmail} = require('../../utils/sendgrid');
+const { sendEmail } = require('../../utils/sendgrid');
 
 module.exports = (() => {
 
@@ -24,6 +24,16 @@ module.exports = (() => {
 		next();
 	})
 
+	/**
+	 * @openapi
+	 * /api/user/test:
+	 *   get:
+	 *     description: Test API User Index Route!
+	 *     tags: [Users]
+	 *     responses:
+	 *       200:
+	 *         description: Returns API user test call.
+	 */
 	user.get("/test", (req, res) => {
 		res.send('API user test call')
 	})
@@ -68,7 +78,7 @@ module.exports = (() => {
 			})
 
 
-			res.status(200).json({user, orgs, teams, projects})
+			res.status(200).json({ user, orgs, teams, projects })
 		} catch (error) {
 			console.log(error)
 		}
@@ -129,8 +139,8 @@ module.exports = (() => {
 			})
 
 			newUser.org = sequelize.fn('array_append', sequelize.col('org'), newOrg.id),
-			newUser.team = sequelize.fn('array_append', sequelize.col('team'), newTeam.id),
-			newUser.project = sequelize.fn('array_append', sequelize.col('project'), newProject.id)
+				newUser.team = sequelize.fn('array_append', sequelize.col('team'), newTeam.id),
+				newUser.project = sequelize.fn('array_append', sequelize.col('project'), newProject.id)
 			newUser.last_active_at = getCurrentTimeStamp()
 
 			await newUser.save()
@@ -186,6 +196,35 @@ module.exports = (() => {
 					message: 'No user with that email',
 					slug: 'error'
 				});
+			}
+
+			if (user.password == '~~~~~~~~') {
+				const existingUser = await User.findOne({
+					where: {
+						email: email
+					}
+				})
+				const loginTokenInfo = LoginToken.create({
+					token: uuidv4(),
+					date_created: getCurrentTimeStamp(),
+					user: existingUser.id,
+					used: false
+				})
+				const response = sendEmail({
+					email: email,
+					templateString: 'loginToken',
+					token: loginTokenInfo.token
+				});
+				response.then(emailStatus => {
+					console.log(emailStatus)
+					res.send({
+						message: 'User has no password, please check email for magic login link',
+						slug: 'error'
+					})
+				}).catch(error => {
+					console.log(error);
+					res.send({ status: 'error', errorMessage: error })
+				})
 			}
 
 			const validPassword = bcrypt.compareSync(password, user.password);
@@ -283,7 +322,7 @@ module.exports = (() => {
 
 		} catch (error) {
 			console.log(error)
-			res.status(500).json({message: 'An error occured inviting a new user'})
+			return res.status(500).json({ message: 'An error occured inviting a new user' })
 		}
 	})
 
@@ -323,7 +362,7 @@ module.exports = (() => {
 
 		} catch (error) {
 			console.log(error)
-			res.status(500).json({message: 'An error occured inviting a new user'})
+			return res.status(500).json({ message: 'An error occured inviting a new user' })
 		}
 	})
 
@@ -364,11 +403,58 @@ module.exports = (() => {
 
 		} catch (error) {
 			console.log(error)
-			res.status(500).json({message: 'An error occured inviting a new user'})
+			res.status(500).json({ message: 'An error occured inviting a new user' })
 		}
 	})
 
 	// TODO create verify email route
+	user.post('/verify-emai', async (req, res) => {
+		try {
+			const { token } = req.body;
+			if (!token) {
+				return res.status(200).json({ message: 'No token sent' });
+			}
+			const dbToken = await VerifyAccountToken.findOne({
+				where: {
+					token: token
+				}
+			})
+			// tokens only good for 15 minutes
+			if ((getCurrentTimeStamp() - dbToken.date_created) > 900000) {
+				return res.status(200).json({ message: 'Token Expired' });
+			}
+			const updatedUser = await User.update(
+				{ verified: true },
+				{
+					where: {
+						id: dbToken.user,
+					},
+				},
+			);
+
+			if (updatedUser) {
+				return res.status(200).json({ message: 'User Verified' })
+			}
+			// TODO: Should we send an email on successful email verification?
+			// const response = sendEmail({
+			// 	email: email,
+			// 	templateString: 'loginToken',
+			// 	token: loginTokenInfo.token
+			// });
+			// response.then(emailStatus => {
+			// 	console.log(emailStatus)
+			// 	res.send({ status: 'email sent' })
+			// }).catch(error => {
+			// 	console.log(error);
+			// 	res.send({ status: 'error', errorMessage: error })
+			// })
+
+
+		} catch (error) {
+			console.log(error)
+			return res.status(500).json({ message: 'An error occured verifying email' })
+		}
+	})
 
 	user.use("*", (req, res) => {
 		res.send("API user CALL ENDED");

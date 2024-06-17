@@ -54,6 +54,7 @@ const User = sequelize.define('user', {
 	last_active_at: Sequelize.DATE,
 	subscription_tier: Sequelize.STRING,
 	subscription_status: Sequelize.STRING,
+	verified: Sequelize.BOOLEAN,
 	org: Sequelize.ARRAY({ type: Sequelize.STRING, }),
 	team: Sequelize.ARRAY({ type: Sequelize.STRING }),
 	project: Sequelize.ARRAY({ type: Sequelize.STRING })
@@ -61,14 +62,15 @@ const User = sequelize.define('user', {
 	hooks: {
 		beforeCreate: (user) => {
 			const salt = bcrypt.genSaltSync(10);
-			user.password = bcrypt.hashSync(user.password ? user.password : '~~~~~~~~', salt);
+			user.password = user.password ? bcrypt.hashSync(user.password, salt) : '~~~~~~~~';
 			user.id = uuidv4();
 			user.last_active_At = getCurrentTimeStamp();
 			user.subscription_tier = user.subscription_tier || 'free'
-			user.subscription_status = user.subscription_status || 'not-paid'
+			user.subscription_status = user.subscription_status || 'inactive'
 			user.org = user.org || []
 			user.team = user.team || []
 			user.project = user.project || []
+			user.verified = false
 		}
 	}
 });
