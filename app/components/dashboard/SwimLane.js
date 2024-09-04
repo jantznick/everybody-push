@@ -11,7 +11,7 @@ export const SwimLane = ({ lane, laneI, tasks, categories }) => {
     const isDragging = useContext(DraggingContext)
 
     return (
-        <div className="swimLane mx-2 bg-slate-400 p-2 w-[24%] rounded flex flex-col">
+        <div className="swimLane mx-2  p-2 w-[24%] rounded flex flex-col">
             <div className="swimLaneTitle p-4 uppercase border-b-black border-b-2">{lane.title}</div>
             <div className={classNames(
                     "categoryHolder",

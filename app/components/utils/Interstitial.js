@@ -20,8 +20,8 @@ export const Interstitial = ({slug, setShowInterstitial}) => {
     }
 
     return (
-		<div id="interstitial" className="text-white flex" style={{top: window.scrollY + 'px'}}>
-			<div className="max-w-[85%] m-auto shadow-md bg-white rounded-md text-black pt-6 px-8">
+		<div id="interstitial" className=" flex" style={{top: window.scrollY + 'px'}}>
+			<div className="max-w-[85%] m-auto shadow-md rounded-md  pt-6 px-8">
                 {children}
             </div>
         </div>

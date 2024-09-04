@@ -27,7 +27,6 @@ export const ToDo = ({ id, i, title, category, status }) => {
                     "flex",
                     "justify-between",
                     "items-center",
-                    "bg-gray-300",
                     "hover:cursor-pointer",
                 )}
                 >

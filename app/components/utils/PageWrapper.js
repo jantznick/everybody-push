@@ -43,7 +43,7 @@ export const PageWrapper = ({ children }) => {
 	return (
         <UserContext.Provider value={{...userData}}>
 			<InterstitialContext.Provider value={{setShowInterstitial, setInterstitialSlug}}>
-				<header className='bg-blue-500 p-8 flex flex-wrap justify-between'>
+				<header className='primary p-8 flex flex-wrap justify-between'>
 					<h1 className='font-bold text-3xl'>Everybody Push - Project Management</h1>
 					{Object.keys(userData).length ? 
 					<div className="icons">
@@ -65,7 +65,7 @@ export const PageWrapper = ({ children }) => {
 						children
 					}
 				</div>
-				<footer className='flex flex-wrap justify-between bg-cyan-700 text-gray-100 px-40 py-8'>
+				<footer className='flex flex-wrap justify-between px-40 py-8'>
 					<div id="left" className='grow'>
 						<h1>Everybody Push - Project Management</h1>
 					</div>

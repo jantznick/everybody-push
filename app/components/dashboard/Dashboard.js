@@ -222,13 +222,13 @@ export const Dashboard = ({projectId, setSelectedTask}) => {
 
 	return (
 		<DraggingContext.Provider value={isDragging}>
-			<div id="dashboard" className="bg-gray-300 min-h-screen w-full">
+			<div id="dashboard" className=" min-h-screen w-full">
 				<div id="dashHeader" className="flex justify-between items-center px-4 py-8 uppercase">
 					<div className='flex items-center w-full'>
 						<div>{org} - {team} - {project} - To Do List</div>
 						{addingTask ?
-							<div className='ml-8 flex max-w-[70%] justify-center items-center bg-gray-300 border-2 border-black rounded-md p-2'>
-								<span role="textbox" contentEditable type="text" name="New Task" id="addTaskInput" placeholder='Add task...' className='overflow-scroll mr-4 whitespace-nowrap 	bg-gray-300 focus-visible:outline-none focus:outline-none placeholder:text-black'>Add a task...</span>
+							<div className='ml-8 flex max-w-[70%] justify-center items-center  border-2  rounded-md p-2'>
+								<span role="textbox" contentEditable type="text" name="New Task" id="addTaskInput" placeholder='Add task...' className='overflow-scroll mr-4 whitespace-nowrap 	focus-visible:outline-none focus:outline-none '>Add a task...</span>
 								{categories.length > 0 &&
 									<Select>
 										<SelectTrigger>

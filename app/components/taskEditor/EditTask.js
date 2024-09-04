@@ -59,7 +59,7 @@ const EditTask = ({ setShowInterstitial, task }) => {
 			)}>
 			{fullWidthComments ?
 				<>
-					<div className="taskDetails w-[64%] bg-gray-500 shadow-lg">
+					<div className="taskDetails w-[64%]  shadow-lg">
 						<DescriptionTop />
 						<div className="description h-60">
 							<div className=''>Description:</div>
@@ -73,7 +73,6 @@ const EditTask = ({ setShowInterstitial, task }) => {
 						"comments",
 						"h-40",
 						"w-full",
-						"bg-blue-500",
 						"order-last",
 						"shadow-lg"
 					)}>
@@ -81,7 +80,6 @@ const EditTask = ({ setShowInterstitial, task }) => {
 					<div className={classNames(
 						"subTasks",
 						"w-[34%]",
-						"bg-red-400",
 						"shadow-lg"
 					)}>
 					</div>
@@ -89,7 +87,7 @@ const EditTask = ({ setShowInterstitial, task }) => {
 			:
 			<>
 				<div className="containThings flex flex-col gap-6 w-[64%]">
-					<div className="taskDetails bg-gray-500 shadow-lg">
+					<div className="taskDetails  shadow-lg">
 						<DescriptionTop />
 						<div className='RTE'>
 							<Tiptap />
@@ -100,7 +98,6 @@ const EditTask = ({ setShowInterstitial, task }) => {
 						"comments",
 						"h-40",
 						"w-full",
-						"bg-blue-500",
 						"shadow-lg"
 					)}>
 					</div>
@@ -108,7 +105,6 @@ const EditTask = ({ setShowInterstitial, task }) => {
 				<div className={classNames(
 					"subTasks",
 					"w-[34%]",
-					"bg-red-400",
 					"order-last",
 					"shadow-lg"
 				)}>

@@ -10,7 +10,6 @@ export const PresentationalToDo = forwardRef(({id, name, status}, ref) => {
         "mx-2",
         "rounded",
         "p-2",
-        "bg-gray-300",
         "hover:cursor-pointer",
         { 'line-through': status == 'done' }
     )}

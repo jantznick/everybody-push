@@ -87,15 +87,13 @@ const LoginForm = ({setShowInterstitial}) => {
 	return (
 		<div id="loginForm" className='w-[30vw]'>
 			<div className="flex justify-center w-full mb-4">
-				<span className="material-symbols-outlined mr-auto text-4xl text-white">close</span>
+				<span className="material-symbols-outlined mr-auto text-4xl ">close</span>
 				{!forgotPassword ?
 					<div className="loginSwitcher w-1/2 flex">
 						<div
 							onClick={toggleRegister}
 							className={classNames(
 								"border-2",
-								"border-blue-600",
-								{"bg-blue-600": register, "text-white": register},
 								"py-2",
 								"rounded-l-md",
 								"hover:cursor-pointer",
@@ -111,8 +109,6 @@ const LoginForm = ({setShowInterstitial}) => {
 							onClick={toggleRegister}
 							className={classNames(
 								"border-2",
-								"border-blue-600",
-								{"bg-blue-600": !register, "text-white": !register},
 								"py-2",
 								"rounded-r-md",
 								"hover:cursor-pointer",
@@ -133,17 +129,17 @@ const LoginForm = ({setShowInterstitial}) => {
 				<div className="forgotPasswordForm">
 					<form className="rounded pb-8 mb-4">
 						<div className="mb-6">
-							<label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
+							<label className="block  text-sm font-bold mb-2" htmlFor="email">
 								Email
 							</label>
-							<input onChange={(e) => setEmail(e.target.value)} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+							<input onChange={(e) => setEmail(e.target.value)} className="shadow appearance-none border rounded w-full py-2 px-3  leading-tight focus:outline-none focus:shadow-outline"
 								id="email" type="text" placeholder="Email" />
 						</div>
 						<div className="flex items-center justify-between">
-							<button onClick={submitForgotPassword} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button">
+							<button onClick={submitForgotPassword} className=" font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button">
 								Send Reset Email
 							</button>
-							<a onClick={forgotPasswordToggle} className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800" href="#">
+							<a onClick={forgotPasswordToggle} className="inline-block align-baseline font-bold text-sm " href="#">
 								Back
 							</a>
 						</div>
@@ -155,26 +151,26 @@ const LoginForm = ({setShowInterstitial}) => {
 						{register &&
 							<div className="mb-4 flex flex-wrap w-full">
 								<div className="input w-1/2 pr-2">
-									<label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="first_name">
+									<label className="block  text-sm font-bold mb-2" htmlFor="first_name">
 										First name
 									</label>
-									<input onChange={(e) => setFirstName(e.target.value)} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+									<input onChange={(e) => setFirstName(e.target.value)} className="shadow appearance-none border rounded w-full py-2 px-3  leading-tight focus:outline-none focus:shadow-outline"
 										id="first_name" type="text" placeholder="First Name" />
 								</div>
 								<div className="input w-1/2">
-									<label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="last_name">
+									<label className="block  text-sm font-bold mb-2" htmlFor="last_name">
 										Last name
 									</label>
-									<input onChange={(e) => setLastName(e.target.value)} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+									<input onChange={(e) => setLastName(e.target.value)} className="shadow appearance-none border rounded w-full py-2 px-3  leading-tight focus:outline-none focus:shadow-outline"
 										id="last_name" type="text" placeholder="Last Name" />
 								</div>
 							</div>
 						}
 						<div className="mb-4 w-full">
-							<label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
+							<label className="block  text-sm font-bold mb-2" htmlFor="email">
 								Email
 							</label>
-							<input onChange={(e) => setEmail(e.target.value)} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+							<input onChange={(e) => setEmail(e.target.value)} className="shadow appearance-none border rounded w-full py-2 px-3  leading-tight focus:outline-none focus:shadow-outline"
 								id="email" type="text" placeholder="Email" />
 						</div>
 						<div className={classNames(
@@ -182,10 +178,10 @@ const LoginForm = ({setShowInterstitial}) => {
 							{"mb-2": formError},
 							"w-full"
 						)}>
-							<label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
+							<label className="block  text-sm font-bold mb-2" htmlFor="password">
 								Password
 							</label>
-							<input onChange={(e) => setPassword(e.target.value)} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+							<input onChange={(e) => setPassword(e.target.value)} className="shadow appearance-none border rounded w-full py-2 px-3  mb-3 leading-tight focus:outline-none focus:shadow-outline"
 								id="password" type="password" placeholder="******************" />
 						</div>
 						{formError && 
@@ -195,15 +191,15 @@ const LoginForm = ({setShowInterstitial}) => {
 						}
 						<div className="flex flex-wrap items-center justify-end w-full">
 							{register ?
-								<button onClick={handleRegister} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full mb-3 focus:outline-none focus:shadow-outline" type="button">
+								<button onClick={handleRegister} className="  font-bold py-2 px-4 rounded w-full mb-3 focus:outline-none focus:shadow-outline" type="button">
 									Register
 								</button>
 							:
-								<button onClick={handleLogin} className="bg-white text-blue-500 border-2 border-blue-500 border-solid hover:border-blue-800 font-bold py-2 px-4 rounded w-full mb-3 focus:outline-none focus:shadow-outline" type="button">
+								<button onClick={handleLogin} className=" border-2 border-blue-500 border-solid  font-bold py-2 px-4 rounded w-full mb-3 focus:outline-none focus:shadow-outline" type="button">
 									Sign In
 								</button>
 							}
-							<a onClick={forgotPasswordToggle} className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800" href="#">
+							<a onClick={forgotPasswordToggle} className="inline-block align-baseline font-bold text-sm " href="#">
 								Forgot Password?
 							</a>
 						</div>
