@@ -1,0 +1,39 @@
+import React from 'react';
+
+import { PageWrapper } from '../utils/PageWrapper';
+
+import {
+	Select,
+	SelectContent,
+	SelectGroup,
+	SelectItem,
+	SelectLabel,
+	SelectTrigger,
+	SelectValue,
+} from "../../components/ui/select"
+
+export const SelectTest = () => {
+
+	return (
+		<PageWrapper>
+			<h1>Verify Email</h1>
+
+			<Select>
+				<SelectTrigger className="w-[180px]">
+					<SelectValue placeholder="Select a fruit" />
+				</SelectTrigger>
+				<SelectContent>
+					<SelectGroup>
+						<SelectLabel>Fruits</SelectLabel>
+						<SelectItem value="apple">Apple</SelectItem>
+						<SelectItem value="banana">Banana</SelectItem>
+						<SelectItem value="blueberry">Blueberry</SelectItem>
+						<SelectItem value="grapes">Grapes</SelectItem>
+						<SelectItem value="pineapple">Pineapple</SelectItem>
+					</SelectGroup>
+				</SelectContent>
+			</Select>
+
+		</PageWrapper>
+	)
+}
