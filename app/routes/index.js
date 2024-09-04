@@ -6,6 +6,7 @@ import { EverybodyPush } from '../components/pages/EverybodyPush.js';
 import { NotFound } from '../components/pages/NotFound.js';
 import { Settings } from '../components/pages/Settings.js';
 import { VerifyEmail } from '../components/pages/VerifyEmail.js';
+import { SelectTest } from '../components/pages/SelectTest.js';
 
 const AppRoutes = () => {
 	return (
@@ -17,6 +18,7 @@ const AppRoutes = () => {
 			<Route path="/verify-email" element={<VerifyEmail/>} />
             {/* users self settings: */}
             <Route path="/dashboard" element={<Settings/>} />
+			<Route path="/select" element={<SelectTest/>} />
             {/* <Route path="/org/:id" element={<Organization/>} /> */}
             {/* <Route path="/team/:id" element={<Team/>} /> */}
             {/* admin user and project management */}
